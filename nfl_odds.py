@@ -19,7 +19,9 @@ TEAMS = {
 }
 
 def fetch():
-    key = os.environ.get("ODDS_API_KEY") or "2aa2e57832d4c9ca4bd66b20b05ba448"
+    key = os.environ.get("ODDS_API_KEY", "")
+    if not key:
+        raise RuntimeError("ODDS_API_KEY secret not set")
     q = urllib.parse.urlencode({"apiKey": key, "regions": "us",
                                 "markets": "h2h", "oddsFormat": "american"})
     url = f"https://api.the-odds-api.com/v4/sports/americanfootball_nfl/odds?{q}"
