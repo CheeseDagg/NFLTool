@@ -1,0 +1,158 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NFL · Model & Value</title>
+<style>
+:root{--bg:#0d1117;--card:#151b23;--line:#232b36;--txt:#dbe4ee;--dim:#8b98a9;
+--acc:#e8b44a;--acc2:#4ad6a2;--red:#e06c75;font-size:15px}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--txt);
+font:400 1rem/1.5 system-ui,Segoe UI,Roboto,sans-serif}
+.wrap{max-width:1060px;margin:0 auto;padding:22px 16px 60px}
+h1{font-size:1.25rem;letter-spacing:.14em;margin:0}
+h1 b{color:var(--acc)}
+.tag{color:var(--dim);font-size:.8rem;letter-spacing:.1em;text-transform:uppercase}
+#meta{color:var(--dim);font-size:.8rem;margin-top:4px}
+nav{display:flex;gap:6px;margin:18px 0 14px;flex-wrap:wrap}
+nav button{background:none;border:1px solid var(--line);color:var(--dim);
+padding:7px 14px;border-radius:8px;cursor:pointer;font:inherit;font-size:.85rem;letter-spacing:.06em}
+nav button.on{background:var(--card);color:var(--txt);border-color:#33404f}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-bottom:14px}
+h3{margin:0 0 6px;font-size:1rem;letter-spacing:.08em;text-transform:uppercase;color:var(--acc)}
+.sub{color:var(--dim);font-size:.82rem;margin-bottom:10px}
+table{width:100%;border-collapse:collapse;font-size:.88rem}
+th{color:var(--dim);text-align:left;font-weight:500;font-size:.74rem;letter-spacing:.1em;
+text-transform:uppercase;padding:6px 8px;border-bottom:1px solid var(--line)}
+td{padding:8px;border-bottom:1px solid var(--line);vertical-align:top}
+.num{text-align:right}.dim{color:var(--dim)}.pill{display:inline-block;background:#1d2632;
+border:1px solid var(--line);border-radius:20px;padding:1px 9px;font-size:.72rem;color:var(--dim);white-space:nowrap}
+.bar{height:7px;border-radius:4px;background:#22303f;min-width:70px;position:relative;overflow:hidden}
+.bar i{position:absolute;inset:0;background:var(--acc2);border-radius:4px}
+.empty{color:var(--dim);padding:18px;text-align:center}
+.hide-m{display:table-cell}@media(max-width:640px){.hide-m{display:none}}
+footer{color:var(--dim);font-size:.72rem;text-align:center;margin-top:26px}
+</style></head><body><div class="wrap">
+<div class="tag">NFLTool</div>
+<h1>NFL <b>MODEL & VALUE</b></h1>
+<div class="tag">elo model · measured vs 16yr of closing lines · line-shop edges</div>
+<div id="meta">loading slate.json…</div>
+<nav>
+<button class="on" data-t="slate">Slate</button>
+<button data-t="edges">Edges</button>
+<button data-t="ratings">Ratings</button>
+<button data-t="cal">Calibration</button>
+<button data-t="method">Method</button>
+</nav>
+
+<section id="t-slate">
+  <div class="card"><h3>Upcoming Slate</h3>
+  <div class="sub">Walk-forward Elo win probability (margin-aware K, preseason regression, home field,
+  rest). <b>Win% is decision support — measured, it is not a betting signal</b> (see Method).
+  Market column is the no-vig consensus when books have priced the game.</div>
+  <div id="slateBody"><div class="empty">no slate loaded</div></div></div>
+</section>
+
+<section id="t-edges" style="display:none">
+  <div class="card"><h3>Line-Shop Edges — the value tab</h3>
+  <div class="sub">The ONLY validated signal here: per-book devig → median no-vig consensus →
+  best available price → quarter-Kelly (capped 2% bankroll). Needs 3+ books per game and a 1%+ gap.
+  The model's win% is deliberately excluded — it lost the disagreement study.</div>
+  <div id="edgesBody"><div class="empty">—</div></div></div>
+</section>
+
+<section id="t-ratings" style="display:none">
+  <div class="card"><h3>Elo Ratings</h3>
+  <div class="sub">Current ratings after every completed game, one-third reverted each new season.
+  1500 = league average; ~25 Elo ≈ 1 point of spread.</div>
+  <div id="ratingsBody"><div class="empty">—</div></div></div>
+</section>
+
+<section id="t-cal" style="display:none">
+  <div class="card"><h3>Calibration — the model, graded live</h3>
+  <div class="sub">Every published win probability is settled against the final score and graded here —
+  including a LIVE continuation of the disagreement study: when this model and the closing market pick
+  opposite sides going forward, who wins? (Historical answer: the market, 55.7% of the time.)</div>
+  <div id="calBody"><div class="empty">grading begins once published games go final</div></div></div>
+</section>
+
+<section id="t-method" style="display:none">
+  <div class="card"><h3>Method — and the honest verdict</h3>
+  <div class="sub" style="font-size:.86rem;line-height:1.65">
+  <b>Win%:</b> margin-aware Elo (K=20, log-margin multiplier, autocorrelation damping), home field ~48
+  Elo, rest-day differential, one-third preseason regression. 64.6% walk-forward over 16 seasons
+  (4,350 games, Brier 0.2205).<br><br>
+  <b>The measured verdict:</b> the closing market hits 66.4% on the same games. In the 693 games where
+  model and market disagreed, the model was right 44.3% — <b>fading the market with this model loses
+  money</b>, measured, not inferred. So the Edges tab sizes line-shopping only; model win% is never
+  used as a betting signal.<br><br>
+  <b>Edges:</b> per-book devig → median no-vig consensus → best available price → quarter-Kelly on the
+  price gap, 2% bankroll cap, 3-book minimum.<br><br>
+  <b>Grading:</b> every published probability is logged pre-game and settled against the final score;
+  the Calibration tab is the model's public report card, including the live disagreement record.</div>
+  <div id="btBody"></div></section>
+
+<footer>model & form are decision support, not advice · data: nflverse · odds: The Odds API</footer>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+const bar=p=>`<div class="bar"><i style="width:${Math.min(Math.max(p,0),100)}%"></i></div>`;
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('nav button').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on');
+  ['slate','edges','ratings','cal','method'].forEach(t=>$('t-'+t).style.display=(t===b.dataset.t?'':'none'));
+});
+function render(d){
+  $('meta').textContent=`updated ${new Date(d.generated).toLocaleString()} · season ${d.games[0]?d.games[0].season:'—'}`;
+  // slate — likelihood-first, full week
+  if(d.games&&d.games.length){
+    $('slateBody').innerHTML=`<table><tr><th>wk</th><th>date</th><th>matchup</th>
+    <th class="num">elo</th><th class="num">home win%</th><th></th><th class="num hide-m">market</th><th class="num hide-m">line</th></tr>`+
+    d.games.map(g=>`<tr>
+      <td class="dim">${g.week}</td><td class="dim">${g.date}</td>
+      <td>${g.away} @ <b>${g.home}</b>${g.neutral?' <span class="pill">neutral</span>':''}</td>
+      <td class="num dim">${Math.round(g.elo_away)} · ${Math.round(g.elo_home)}</td>
+      <td class="num"><b>${g.p_home}%</b></td><td>${bar(g.p_home)}</td>
+      <td class="num hide-m dim">${g.mkt_p!=null?g.mkt_p+'%':'—'}</td>
+      <td class="num hide-m dim">${g.spread_line!=null?(g.spread_line>0?'-':'+')+Math.abs(g.spread_line)+' '+g.home:'—'}</td>
+    </tr>`).join('')+`</table>`;
+  }
+  // edges
+  if(d.edges&&d.edges.length){
+    $('edgesBody').innerHTML=`<table><tr><th>matchup</th><th>bet</th><th class="num">best price</th>
+    <th class="num">fair</th><th class="num">edge</th><th class="num">stake</th><th class="hide-m">book</th></tr>`+
+    d.edges.map(e=>`<tr><td>${e.matchup}</td><td><b>${e.bet}</b></td>
+    <td class="num">${e.price>0?'+':''}${e.price}</td><td class="num dim">${e.fair}</td>
+    <td class="num"><b style="color:var(--acc2)">+${e.edge_pct}%</b></td>
+    <td class="num">${(e.stake_frac*100).toFixed(1)}%</td>
+    <td class="hide-m dim">${e.book} <span class="pill">${e.books_n} books</span></td></tr>`).join('')+`</table>`;
+  } else { $('edgesBody').innerHTML=`<div class="empty">${d.edge_note||'no edges'}</div>`; }
+  // ratings
+  if(d.ratings&&d.ratings.length){
+    $('ratingsBody').innerHTML=`<table><tr><th>#</th><th>team</th><th class="num">elo</th><th></th></tr>`+
+    d.ratings.map((r,i)=>`<tr><td class="dim">${i+1}</td><td><b>${r.team}</b></td>
+    <td class="num">${r.elo}</td><td>${bar((r.elo-1300)/4)}</td></tr>`).join('')+`</table>`;
+  }
+  // calibration
+  const c=d.cal;
+  if(c&&c.n>0){
+    let h=`<div class="sub"><b>${c.n}</b> graded games over <b>${c.weeks}</b> week(s) · accuracy <b>${c.acc}%</b> · Brier <b>${c.brier}</b>${c.ties?` · ties ${c.ties}`:''}</div>`;
+    if(c.buckets&&c.buckets.length){
+      h+=`<table><tr><th>home win% bucket</th><th class="num">n</th><th class="num">avg pred</th><th class="num">actual</th><th></th></tr>`+
+      c.buckets.map(b=>`<tr><td>${b.bucket}%</td><td class="num">${b.n}</td><td class="num">${b.pred}%</td>
+      <td class="num"><b>${b.actual}%</b></td><td>${bar(b.actual)}</td></tr>`).join('')+`</table>`;
+    }
+    if(c.market){
+      const m=c.market;
+      h+=`<div class="sub" style="margin-top:10px">vs closing market (live continuation of the 693-game study):
+      market accuracy <b>${m.acc}%</b> on ${m.n} · disagreements so far <b>${m.disagree_n}</b>`+
+      (m.disagree_model_right!=null?` · model right <b style="color:${m.disagree_model_right>=50?'var(--acc2)':'var(--red)'}">${m.disagree_model_right}%</b>`:'')+`</div>`;
+    }
+    $('calBody').innerHTML=h;
+  }
+  // method backtest strip
+  const b=d.backtest;
+  if(b){$('btBody').innerHTML=`<div class="sub" style="margin-top:6px">verified this build: model <b>${b.acc}%</b> ·
+  Brier <b>${b.brier}</b> · market <b>${b.market_acc}%</b> · disagreements <b>${b.n_disagree}</b> @ model
+  <b>${b.model_right_in_disagree}%</b> right — the 44.3 verdict, recomputed from raw data every run.</div>`;}
+}
+fetch('data/slate.json').then(r=>r.json()).then(render)
+ .catch(()=>{$('meta').textContent='could not load slate.json — run nfl_publish.py (or wait for the daily Action)';});
+</script></body></html>

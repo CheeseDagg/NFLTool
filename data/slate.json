@@ -1,0 +1,359 @@
+{
+ "generated": "2026-07-07T21:34:02+00:00",
+ "games": [
+  {
+   "season": 2026,
+   "week": 1,
+   "date": "Wed Sep 9",
+   "away": "NE",
+   "home": "SEA",
+   "elo_away": 1595.0,
+   "elo_home": 1669.6,
+   "p_home": 66.9,
+   "neutral": false,
+   "spread_line": 3.5,
+   "mkt_p": null
+  },
+  {
+   "season": 2026,
+   "week": 1,
+   "date": "Thu Sep 10",
+   "away": "SF",
+   "home": "LA",
+   "elo_away": 1557.2,
+   "elo_home": 1606.0,
+   "p_home": 57.0,
+   "neutral": true,
+   "spread_line": 3.0,
+   "mkt_p": null
+  },
+  {
+   "season": 2026,
+   "week": 1,
+   "date": "Sun Sep 13",
+   "away": "CHI",
+   "home": "CAR",
+   "elo_away": 1529.0,
+   "elo_home": 1429.6,
+   "p_home": 42.7,
+   "neutral": false,
+   "spread_line": -2.5,
+   "mkt_p": null
+  },
+  {
+   "season": 2026,
+   "week": 1,
+   "date": "Sun Sep 13",
+   "away": "TB",
+   "home": "CIN",
+   "elo_away": 1476.6,
+   "elo_home": 1477.3,
+   "p_home": 57.0,
+   "neutral": false,
+   "spread_line": 3.5,
+   "mkt_p": null
+  },
+  {
+   "season": 2026,
+   "week": 1,
+   "date": "Sun Sep 13",
+   "away": "NO",
+   "home": "DET",
+   "elo_away": 1437.3,
+   "elo_home": 1551.3,
+   "p_home": 71.8,
+   "neutral": false,
+   "spread_line": 7.0,
+   "mkt_p": null
+  },
+  {
+   "season": 2026,
+   "week": 1,
+   "date": "Sun Sep 13",
+   "away": "BUF",
+   "home": "HOU",
+   "elo_away": 1604.1,
+   "elo_home": 1603.8,
+   "p_home": 56.8,
+   "neutral": false,
+   "spread_line": -1.5,
+   "mkt_p": null
+  },
+  {
+   "season": 2026,
+   "week": 1,
+   "date": "Sun Sep 13",
+   "away": "BAL",
+   "home": "IND",
+   "elo_away": 1540.6,
+   "elo_home": 1465.8,
+   "p_home": 46.1,
+   "neutral": false,
+   "spread_line": -3.5,
+   "mkt_p": null
+  },
+  {
+   "season": 2026,
+   "week": 1,
+   "date": "Sun Sep 13",
+   "away": "CLE",
+   "home": "JAX",
+   "elo_away": 1421.3,
+   "elo_home": 1567.8,
+   "p_home": 75.4,
+   "neutral": false,
+   "spread_line": 7.5,
+   "mkt_p": null
+  },
+  {
+   "season": 2026,
+   "week": 1,
+   "date": "Sun Sep 13",
+   "away": "ATL",
+   "home": "PIT",
+   "elo_away": 1470.8,
+   "elo_home": 1509.9,
+   "p_home": 62.3,
+   "neutral": false,
+   "spread_line": 3.0,
+   "mkt_p": null
+  },
+  {
+   "season": 2026,
+   "week": 1,
+   "date": "Sun Sep 13",
+   "away": "NYJ",
+   "home": "TEN",
+   "elo_away": 1359.7,
+   "elo_home": 1356.4,
+   "p_home": 56.4,
+   "neutral": false,
+   "spread_line": 3.0,
+   "mkt_p": null
+  },
+  {
+   "season": 2026,
+   "week": 1,
+   "date": "Sun Sep 13",
+   "away": "ARI",
+   "home": "LAC",
+   "elo_away": 1389.8,
+   "elo_home": 1524.4,
+   "p_home": 74.1,
+   "neutral": false,
+   "spread_line": 11.5,
+   "mkt_p": null
+  },
+  {
+   "season": 2026,
+   "week": 1,
+   "date": "Sun Sep 13",
+   "away": "MIA",
+   "home": "LV",
+   "elo_away": 1455.3,
+   "elo_home": 1349.6,
+   "p_home": 41.8,
+   "neutral": false,
+   "spread_line": 3.5,
+   "mkt_p": null
+  },
+  {
+   "season": 2026,
+   "week": 1,
+   "date": "Sun Sep 13",
+   "away": "GB",
+   "home": "MIN",
+   "elo_away": 1525.2,
+   "elo_home": 1549.5,
+   "p_home": 60.3,
+   "neutral": false,
+   "spread_line": -1.5,
+   "mkt_p": null
+  },
+  {
+   "season": 2026,
+   "week": 1,
+   "date": "Sun Sep 13",
+   "away": "WAS",
+   "home": "PHI",
+   "elo_away": 1460.1,
+   "elo_home": 1555.7,
+   "p_home": 69.6,
+   "neutral": false,
+   "spread_line": 5.5,
+   "mkt_p": null
+  },
+  {
+   "season": 2026,
+   "week": 1,
+   "date": "Sun Sep 13",
+   "away": "DAL",
+   "home": "NYG",
+   "elo_away": 1453.8,
+   "elo_home": 1423.2,
+   "p_home": 52.5,
+   "neutral": false,
+   "spread_line": -2.5,
+   "mkt_p": null
+  },
+  {
+   "season": 2026,
+   "week": 1,
+   "date": "Mon Sep 14",
+   "away": "DEN",
+   "home": "KC",
+   "elo_away": 1606.0,
+   "elo_home": 1486.9,
+   "p_home": 39.9,
+   "neutral": false,
+   "spread_line": 2.5,
+   "mkt_p": null
+  }
+ ],
+ "ratings": [
+  {
+   "team": "SEA",
+   "elo": 1669.6
+  },
+  {
+   "team": "DEN",
+   "elo": 1606.0
+  },
+  {
+   "team": "LA",
+   "elo": 1606.0
+  },
+  {
+   "team": "BUF",
+   "elo": 1604.1
+  },
+  {
+   "team": "HOU",
+   "elo": 1603.8
+  },
+  {
+   "team": "NE",
+   "elo": 1595.0
+  },
+  {
+   "team": "JAX",
+   "elo": 1567.8
+  },
+  {
+   "team": "SF",
+   "elo": 1557.2
+  },
+  {
+   "team": "PHI",
+   "elo": 1555.7
+  },
+  {
+   "team": "DET",
+   "elo": 1551.3
+  },
+  {
+   "team": "MIN",
+   "elo": 1549.5
+  },
+  {
+   "team": "BAL",
+   "elo": 1540.6
+  },
+  {
+   "team": "CHI",
+   "elo": 1529.0
+  },
+  {
+   "team": "GB",
+   "elo": 1525.2
+  },
+  {
+   "team": "LAC",
+   "elo": 1524.4
+  },
+  {
+   "team": "PIT",
+   "elo": 1509.9
+  },
+  {
+   "team": "STL",
+   "elo": 1499.5
+  },
+  {
+   "team": "SD",
+   "elo": 1498.1
+  },
+  {
+   "team": "OAK",
+   "elo": 1493.8
+  },
+  {
+   "team": "KC",
+   "elo": 1486.9
+  },
+  {
+   "team": "CIN",
+   "elo": 1477.3
+  },
+  {
+   "team": "TB",
+   "elo": 1476.6
+  },
+  {
+   "team": "ATL",
+   "elo": 1470.8
+  },
+  {
+   "team": "IND",
+   "elo": 1465.8
+  },
+  {
+   "team": "WAS",
+   "elo": 1460.1
+  },
+  {
+   "team": "MIA",
+   "elo": 1455.3
+  },
+  {
+   "team": "DAL",
+   "elo": 1453.8
+  },
+  {
+   "team": "NO",
+   "elo": 1437.3
+  },
+  {
+   "team": "CAR",
+   "elo": 1429.6
+  },
+  {
+   "team": "NYG",
+   "elo": 1423.2
+  },
+  {
+   "team": "CLE",
+   "elo": 1421.3
+  },
+  {
+   "team": "ARI",
+   "elo": 1389.8
+  }
+ ],
+ "edges": [],
+ "edge_note": "no priced games yet (offseason)",
+ "backtest": {
+  "n": 4350,
+  "acc": 64.6,
+  "brier": 0.2205,
+  "n_mkt": 4349,
+  "market_acc": 66.4,
+  "n_disagree": 693,
+  "model_right_in_disagree": 44.3
+ },
+ "cal": {
+  "n": 0,
+  "ties": 0,
+  "weeks": 0
+ }
+}
