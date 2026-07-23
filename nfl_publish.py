@@ -72,12 +72,19 @@ def main():
     for r in win.itertuples():
         games.append({"season": r.season, "week": r.week,
                       "date": r.gameday.strftime("%a %b %-d") if pd.notna(r.gameday) else "",
+                      "date_iso": r.gameday.strftime("%Y-%m-%d") if pd.notna(r.gameday) else "",
                       "away": r.away, "home": r.home,
                       "elo_away": r.elo_away, "elo_home": r.elo_home,
                       "p_home": r.p_home, "neutral": bool(r.neutral),
                       "spread_line": r.spread_line,
                       "mkt_p": mkt.get((r.home, r.away))})
+    # Real freshness signal = the games' own dates, not wall-clock `generated` (which is
+    # stamped every run). If the pipeline stops publishing, slate_end falls into the past
+    # and the dashboard can warn instead of showing a frozen week as current.
+    _gd = sorted(g["date_iso"] for g in games if g["date_iso"])
     out = {"generated": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
+           "slate_date": _gd[0] if _gd else None,
+           "slate_end": _gd[-1] if _gd else None,
            "games": games, "ratings": ratings[:32],
            "edges": edges, "edge_note": edge_note,
            "backtest": bt, "cal": cal}

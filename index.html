@@ -100,7 +100,17 @@ document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{
   ['slate','edges','ratings','cal','method'].forEach(t=>$('t-'+t).style.display=(t===b.dataset.t?'':'none'));
 });
 function render(d){
-  $('meta').textContent=`updated ${new Date(d.generated).toLocaleString()} · season ${d.games[0]?d.games[0].season:'—'}`;
+  var _meta=`updated ${new Date(d.generated).toLocaleString()} · season ${d.games[0]?d.games[0].season:'—'}`;
+  // FRESHNESS: if the whole slate's games are in the past, the daily build has stopped —
+  // warn instead of presenting a frozen week as the current one.
+  var _end=d.slate_end||'';
+  var _n=new Date();
+  var _t=_n.getFullYear()+'-'+String(_n.getMonth()+1).padStart(2,'0')+'-'+String(_n.getDate()).padStart(2,'0');
+  if(_end && _end<_t){
+    $('meta').innerHTML='<span style="color:#e5533c;font-weight:800">⚠ STALE SLATE — these games are through '+_end+' (today is '+_t+'). The daily build hasn\'t refreshed.</span><br>'+_meta;
+  } else {
+    $('meta').textContent=_meta;
+  }
   // slate — likelihood-first, full week
   if(d.games&&d.games.length){
     $('slateBody').innerHTML=`<table><tr><th>wk</th><th>date</th><th>matchup</th>
