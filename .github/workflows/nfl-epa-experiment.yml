@@ -1,0 +1,30 @@
+name: NFL EPA experiment
+# On-demand research experiment: does play-by-play EPA / QB-EPA beat the team-Elo model
+# out-of-sample? Runs the leak-free backtest and prints a VERDICT. Touches no production
+# model — nothing ships unless the verdict shows a robust win.
+on:
+  workflow_dispatch: {}
+permissions:
+  contents: read
+jobs:
+  experiment:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.11' }
+      - name: deps
+        run: pip install pandas numpy pyarrow
+      - name: selftest gate (leak-free logic must hold)
+        run: python nfl_epa_experiment.py --selftest
+      - name: run experiment (prints baseline vs EPA verdict)
+        run: python nfl_epa_experiment.py
+      - name: upload results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nfl-epa-result
+          path: |
+            data/*.json
+            data/*epa*
+          if-no-files-found: ignore
