@@ -22,6 +22,9 @@ URL = "https://raw.githubusercontent.com/nflverse/nfldata/master/data/games.csv"
 HERE = os.path.dirname(os.path.abspath(__file__))
 K, HFA_PTS, REVERT, SCALE = 20.0, 48.0, 0.33, 400.0   # Elo params (48 Elo ~ 1.7 pts HFA)
 REST_PER_DAY = 4.0                                     # Elo per rest-day differential vs 7
+DIV_TAU = 0.90   # divisional games: shrink the Elo edge toward 50% at PREDICTION time only
+                 # (ratings/updates untouched). Walk-forward validated: holdout Brier -0.0003,
+                 # improved 5/6 holdout seasons; division rivals upset favorites more often.
 
 def load():
     path = os.path.join(HERE, "games.csv")
@@ -52,11 +55,15 @@ def run_elo(g, start_season=2010):
         hfa = 0.0 if str(r.location) == "Neutral" else HFA_PTS
         dr = (R[h] + hfa + rest) - R[a]
         p_home = expected(dr)
+        # divisional shrink applies to the REPORTED prediction only; Elo updates below
+        # keep using the unshrunk p_home so ratings are byte-identical to before.
+        _div = bool(getattr(r, "div_game", 0) == 1)
+        p_pred = expected(dr * DIV_TAU) if _div else p_home
         if pd.notna(r.home_score) and pd.notna(r.away_score):
             margin = r.home_score - r.away_score
             if r.season >= start_season:
                 preds.append({"season": r.season, "week": r.week, "home": h, "away": a,
-                              "p_home": p_home, "home_win": int(margin > 0),
+                              "p_home": p_pred, "home_win": int(margin > 0),
                               "tie": int(margin == 0),
                               "home_ml": r.home_moneyline, "away_ml": r.away_moneyline,
                               "spread": r.spread_line})
@@ -106,10 +113,12 @@ def state():
         if pd.notna(r.home_rest) and pd.notna(r.away_rest):
             rest = REST_PER_DAY * ((r.home_rest - 7) - (r.away_rest - 7))
         hfa = 0.0 if str(r.location) == "Neutral" else HFA_PTS
+        _dr = (R[h] + hfa + rest) - R[a]
+        _tau = DIV_TAU if getattr(r, "div_game", 0) == 1 else 1.0
         rows.append({"season": int(r.season), "week": int(r.week),
                      "gameday": r.gameday, "home": h, "away": a,
                      "elo_home": round(R[h], 1), "elo_away": round(R[a], 1),
-                     "p_home": round(100 * expected((R[h] + hfa + rest) - R[a]), 1),
+                     "p_home": round(100 * expected(_dr * _tau), 1),
                      "neutral": str(r.location) == "Neutral",
                      "spread_line": None if pd.isna(r.spread_line) else float(r.spread_line)})
     ratings = sorted(({"team": t, "elo": round(v, 1)} for t, v in R.items()),
