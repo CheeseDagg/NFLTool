@@ -35,7 +35,9 @@ jobs:
           for attempt in 1 2 3 4 5; do
             git fetch origin main
             git reset --mixed origin/main
-            git add data/slate.json data/nfl_predictions.csv data/nfl_graded.csv
+            for f in data/slate.json data/nfl_predictions.csv data/nfl_graded.csv; do
+              git add "$f" 2>/dev/null || true
+            done
             if git diff --cached --quiet; then
               echo "slate unchanged vs published -- nothing to commit."
               exit 0
