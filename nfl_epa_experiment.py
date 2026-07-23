@@ -58,9 +58,16 @@ def expected(dr):
 # =====================================================================
 #  DATA LOADING
 # =====================================================================
+GAMES_URL = "https://raw.githubusercontent.com/nflverse/nfldata/master/data/games.csv"
+
 def load_games():
-    """The same games table the production model uses (already in the repo)."""
+    """The same games table the production model uses. Download it if absent (the
+    Actions runner starts with a clean checkout and games.csv is not committed)."""
     path = os.path.join(HERE, "games.csv")
+    if not os.path.exists(path):
+        import urllib.request
+        print(f"games.csv not present — downloading from nflverse ...")
+        urllib.request.urlretrieve(GAMES_URL, path)
     g = pd.read_csv(path)
     g = g[g["game_type"].isin(["REG", "WC", "DIV", "CON", "SB"])].copy()
     g["gameday"] = pd.to_datetime(g["gameday"], errors="coerce")

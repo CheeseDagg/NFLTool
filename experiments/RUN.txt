@@ -1,2 +1,1 @@
-trigger experiments — run 1
-kicked off from Cowork; each workflow commits its VERDICT to experiments/*-VERDICT.md
+trigger experiments — run 2 (fixed data pull)
