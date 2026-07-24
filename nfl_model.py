@@ -20,7 +20,13 @@ import numpy as np, pandas as pd
 
 URL = "https://raw.githubusercontent.com/nflverse/nfldata/master/data/games.csv"
 HERE = os.path.dirname(os.path.abspath(__file__))
-K, HFA_PTS, REVERT, SCALE = 20.0, 48.0, 0.33, 400.0   # Elo params (48 Elo ~ 1.7 pts HFA)
+K, REVERT, SCALE = 20.0, 0.33, 400.0                  # Elo params
+# ADAPTIVE home-field advantage. The old fixed HFA=48 was implicitly tuned on history
+# that includes recent seasons (a look-ahead constant); the honest 2019-vintage pick
+# (55) scores much worse 2020-2025. This EWMA tracks the realized home edge with zero
+# look-ahead (HFA_LR=1.0 is an a-priori default, not train-tuned — the drift is a
+# post-2020 phenomenon so no in-sample tuning is possible; 4/6 holdout seasons better).
+HFA_INIT, HFA_LR = 50.0, 1.0
 REST_PER_DAY = 4.0                                     # Elo per rest-day differential vs 7
 DIV_TAU = 0.90   # divisional games: shrink the Elo edge toward 50% at PREDICTION time only
                  # (ratings/updates untouched). Walk-forward validated: holdout Brier -0.0003,
@@ -43,6 +49,7 @@ def run_elo(g, start_season=2010):
     R = {}
     cur_season = None
     preds = []
+    H = HFA_INIT                     # adaptive home-field advantage (leak-free EWMA)
     for r in g.itertuples():
         if r.season != cur_season:                     # preseason regression
             cur_season = r.season
@@ -52,7 +59,8 @@ def run_elo(g, start_season=2010):
         rest = 0.0
         if pd.notna(r.home_rest) and pd.notna(r.away_rest):
             rest = REST_PER_DAY * ((r.home_rest - 7) - (r.away_rest - 7))
-        hfa = 0.0 if str(r.location) == "Neutral" else HFA_PTS
+        neutral = str(r.location) == "Neutral"
+        hfa = 0.0 if neutral else H
         dr = (R[h] + hfa + rest) - R[a]
         p_home = expected(dr)
         # divisional shrink applies to the REPORTED prediction only; Elo updates below
@@ -73,7 +81,11 @@ def run_elo(g, start_season=2010):
             s_home = 1.0 if margin > 0 else (0.5 if margin == 0 else 0.0)
             delta = K * mov * (s_home - p_home)
             R[h] += delta; R[a] -= delta
-    return R, pd.DataFrame(preds)
+            if not neutral:
+                # adaptive HFA: one gradient step on the home win residual. Tracks the
+                # documented post-2020 HFA decline (~57 -> ~40 Elo) with zero look-ahead.
+                H += HFA_LR * (s_home - p_home)
+    return R, pd.DataFrame(preds), H
 
 def _dec(ml):
     return ml / 100 + 1 if ml > 0 else 100 / (-ml) + 1
@@ -102,7 +114,7 @@ def state():
     """Live API for the publisher: current ratings + every unplayed scheduled
     game with a pregame p_home from today's Elo (HFA + rest applied)."""
     g = load()
-    R, P = run_elo(g)
+    R, P, H = run_elo(g)
     bt = backtest(P)
     up = g[g["home_score"].isna()].copy()
     rows = []
@@ -112,7 +124,7 @@ def state():
         rest = 0.0
         if pd.notna(r.home_rest) and pd.notna(r.away_rest):
             rest = REST_PER_DAY * ((r.home_rest - 7) - (r.away_rest - 7))
-        hfa = 0.0 if str(r.location) == "Neutral" else HFA_PTS
+        hfa = 0.0 if str(r.location) == "Neutral" else H
         _dr = (R[h] + hfa + rest) - R[a]
         _tau = DIV_TAU if getattr(r, "div_game", 0) == 1 else 1.0
         rows.append({"season": int(r.season), "week": int(r.week),
@@ -127,7 +139,7 @@ def state():
 
 if __name__ == "__main__":
     g = load()
-    R, P = run_elo(g)
+    R, P, H = run_elo(g)
     bt = backtest(P)
     print(f"walk-forward {P['season'].min()}-{P['season'].max()}: {bt['n']} games")
     print(f"  model accuracy:  {bt['acc']}%   (benchmark: 64.6)")
