@@ -1,5 +1,5 @@
 {
- "generated": "2026-08-01T16:00:18+00:00",
+ "generated": "2026-08-02T16:02:16+00:00",
  "slate_date": "2026-09-09",
  "slate_end": "2026-09-14",
  "games": [
@@ -85,7 +85,7 @@
    "p_home": 54.8,
    "neutral": false,
    "spread_line": -1.5,
-   "mkt_p": 48.9
+   "mkt_p": 48.7
   },
   {
    "season": 2026,
@@ -360,16 +360,6 @@
  ],
  "edges": [
   {
-   "matchup": "NE @ SEA",
-   "bet": "NE ML",
-   "price": 184,
-   "book": "fanduel",
-   "fair": "+175",
-   "edge_pct": 3.1,
-   "stake_frac": 0.0042,
-   "books_n": 9
-  },
-  {
    "matchup": "SF @ LA",
    "bet": "SF ML",
    "price": 176,
@@ -377,6 +367,16 @@
    "fair": "+169",
    "edge_pct": 2.4,
    "stake_frac": 0.0035,
+   "books_n": 9
+  },
+  {
+   "matchup": "NE @ SEA",
+   "bet": "NE ML",
+   "price": 180,
+   "book": "betrivers",
+   "fair": "+175",
+   "edge_pct": 1.7,
+   "stake_frac": 0.0023,
    "books_n": 9
   },
   {
