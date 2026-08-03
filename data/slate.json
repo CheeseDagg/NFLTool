@@ -1,5 +1,5 @@
 {
- "generated": "2026-08-03T18:56:46+00:00",
+ "generated": "2026-08-03T22:48:02+00:00",
  "slate_date": "2026-09-09",
  "slate_end": "2026-09-14",
  "games": [
@@ -15,7 +15,7 @@
    "p_home": 65.0,
    "neutral": false,
    "spread_line": 3.5,
-   "mkt_p": null
+   "mkt_p": 63.7
   },
   {
    "season": 2026,
@@ -29,7 +29,7 @@
    "p_home": 56.3,
    "neutral": true,
    "spread_line": 3.5,
-   "mkt_p": null
+   "mkt_p": 63.0
   },
   {
    "season": 2026,
@@ -43,7 +43,7 @@
    "p_home": 40.6,
    "neutral": false,
    "spread_line": -2.5,
-   "mkt_p": null
+   "mkt_p": 42.9
   },
   {
    "season": 2026,
@@ -57,7 +57,7 @@
    "p_home": 55.1,
    "neutral": false,
    "spread_line": 3.5,
-   "mkt_p": null
+   "mkt_p": 63.4
   },
   {
    "season": 2026,
@@ -71,7 +71,7 @@
    "p_home": 69.9,
    "neutral": false,
    "spread_line": 7.0,
-   "mkt_p": null
+   "mkt_p": 74.0
   },
   {
    "season": 2026,
@@ -85,7 +85,7 @@
    "p_home": 54.8,
    "neutral": false,
    "spread_line": -1.5,
-   "mkt_p": null
+   "mkt_p": 48.9
   },
   {
    "season": 2026,
@@ -99,7 +99,7 @@
    "p_home": 44.3,
    "neutral": false,
    "spread_line": -3.5,
-   "mkt_p": null
+   "mkt_p": 37.2
   },
   {
    "season": 2026,
@@ -113,7 +113,7 @@
    "p_home": 74.0,
    "neutral": false,
    "spread_line": 7.5,
-   "mkt_p": null
+   "mkt_p": 76.4
   },
   {
    "season": 2026,
@@ -127,7 +127,7 @@
    "p_home": 60.5,
    "neutral": false,
    "spread_line": 3.0,
-   "mkt_p": null
+   "mkt_p": 59.4
   },
   {
    "season": 2026,
@@ -141,7 +141,7 @@
    "p_home": 54.5,
    "neutral": false,
    "spread_line": 3.0,
-   "mkt_p": null
+   "mkt_p": 57.2
   },
   {
    "season": 2026,
@@ -155,7 +155,7 @@
    "p_home": 72.4,
    "neutral": false,
    "spread_line": 11.5,
-   "mkt_p": null
+   "mkt_p": 82.2
   },
   {
    "season": 2026,
@@ -169,7 +169,7 @@
    "p_home": 40.2,
    "neutral": false,
    "spread_line": 3.5,
-   "mkt_p": null
+   "mkt_p": 63.5
   },
   {
    "season": 2026,
@@ -183,7 +183,7 @@
    "p_home": 57.8,
    "neutral": false,
    "spread_line": -1.5,
-   "mkt_p": null
+   "mkt_p": 49.8
   },
   {
    "season": 2026,
@@ -197,7 +197,7 @@
    "p_home": 66.3,
    "neutral": false,
    "spread_line": 4.5,
-   "mkt_p": null
+   "mkt_p": 65.5
   },
   {
    "season": 2026,
@@ -211,7 +211,7 @@
    "p_home": 50.7,
    "neutral": false,
    "spread_line": -2.5,
-   "mkt_p": null
+   "mkt_p": 42.9
   },
   {
    "season": 2026,
@@ -225,7 +225,7 @@
    "p_home": 38.9,
    "neutral": false,
    "spread_line": 3.0,
-   "mkt_p": null
+   "mkt_p": 57.8
   }
  ],
  "ratings": [
@@ -358,16 +358,30 @@
    "elo": 1351.6
   }
  ],
- "edges": [],
- "edge_note": "odds pull FAILED (RuntimeError: ODDS_API_KEY secret not set) at 2026-08-03T18:43:25+00:00 \u2014 prices below, if any, are stale. This is not an offseason signal.",
+ "edges": [
+  {
+   "matchup": "SF @ LA",
+   "bet": "SF ML",
+   "price": 176,
+   "book": "fanduel",
+   "fair": "+170",
+   "edge_pct": 2.2,
+   "stake_frac": 0.0032,
+   "books_n": 9,
+   "bettable_n": 1,
+   "any_price": null,
+   "any_book": null
+  }
+ ],
+ "edge_note": "",
  "odds_status": {
-  "checked": "2026-08-03T18:43:25+00:00",
-  "ok": false,
-  "error": "RuntimeError: ODDS_API_KEY secret not set",
-  "rows": null,
-  "games": null,
-  "kept_previous_rows": 0,
-  "note": "odds pull FAILED \u2014 the previous nfl_odds.csv was kept, not overwritten. This is NOT an offseason signal."
+  "checked": "2026-08-03T22:48:01+00:00",
+  "ok": true,
+  "error": null,
+  "rows": 411,
+  "games": 272,
+  "kept_previous_rows": null,
+  "note": ""
  },
  "bettable": [
   "fanduel"
@@ -390,8 +404,10 @@
   "brier": 0.2202,
   "n_mkt": 4349,
   "market_acc": 66.4,
+  "acc_mkt": 64.9,
   "n_disagree": 679,
-  "model_right_in_disagree": 45.1
+  "model_right_in_disagree": 45.1,
+  "market_right_in_disagree": 54.9
  },
  "cal": {
   "n": 0,
