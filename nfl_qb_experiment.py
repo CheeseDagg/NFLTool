@@ -59,15 +59,25 @@ NO GRIDS. Coefficients here are joint MLE, not grid searches, so the
 grid-edge / censored-fit problem that bit the UFC batches cannot arise: there
 is no wall for a coefficient to pin against.
 
-THE ONE HONEST CAVEAT. `home_qb_id` is the QB who actually started the game.
-At Sunday-morning prediction time you know the ANNOUNCED starter, which is
-usually but not always the same man. So these features are very slightly
-better-informed than a live model would be, in the direction of making an
-effect easier to find. That biases toward a FALSE POSITIVE, never toward a
-false negative — so a null here is safe to believe, and a win would need the
-announced-starter version re-run before it ships.
+THE CAVEAT THAT TURNED OUT TO BE THE VERDICT. `home_qb_id` is the QB who
+actually started the game. An earlier version of this header called that a
+slight optimism — "at Sunday-morning prediction time you know the ANNOUNCED
+starter, usually but not always the same man" — and concluded it only biased
+toward a false positive. That was wrong by a category. nflverse populates
+home_qb_id on all 7,276 PLAYED rows and on 0 of the 272 UNPLAYED rows
+nfl_model.state() predicts. It is not a slightly-optimistic version of a live
+column; there is no live column. Every angle here is uncomputable in
+production, and all five now come back BLOCKED at gate 0. The measured gains
+below are real and they are unshippable, which is a different sentence from
+either "win" or "null" and the file prints it as one.
 
-FOUR GATES, same rule as the UFC batches:
+FIVE GATES, same rule as the UFC batches:
+  0 AVAILABILITY      are the raw columns the feature reads even POPULATED on
+                      the unplayed games production predicts? This gate was
+                      missing, QBNEW cleared the other four, and it took manual
+                      inspection to notice. Unlike gates 1-4 it is not advisory:
+                      it blocks inside verdict_of, so an unavailable feature
+                      cannot print ROBUST WIN at any effect size.
   1 POWER CEILING     plant an effect of known size, see whether the pipeline
                       recovers it. A non-positive oracle means the baseline
                       absorbed the plant: that is a BROKEN PROBE, not a dead
@@ -85,6 +95,7 @@ RUN:
 import os
 import sys
 import math
+import inspect
 
 import numpy as np
 import pandas as pd
@@ -286,6 +297,476 @@ def build_panel(g, start_season=TRAIN_LO):
 
 
 # ---------------------------------------------------------------------------
+# GATE 0 — AVAILABILITY. Is the feature computable on the games we PREDICT?
+# ---------------------------------------------------------------------------
+# WHY THIS GATE EXISTS. The leak proof in selftest() tests TIME-ORDERING: that a
+# later game's result cannot move an earlier game's features. That is a real
+# check and QBNEW passes it — along with all four numbered gates — while still
+# being uncomputable in production. QBNEW reads `home_qb_id`/`away_qb_id`, the
+# quarterback who ACTUALLY STARTED. nflverse populates those on every played row
+# and on NONE of the unplayed rows nfl_model.state() predicts. So QBNEW scored a
+# real backtest gain on a column that does not exist at the moment of use.
+# Time-ordering and availability are different questions and the harness was
+# only asking one of them. This is the other one.
+#
+# WHY THE CHECK IS AT THE RAW-COLUMN LEVEL AND NOT ON THE FEATURE'S OUTPUT.
+# The obvious version of this gate — compute the feature on the unplayed slate,
+# look for NaN — does not work, and QBNEW is precisely the counterexample. Hand
+# build_panel a slate whose home_qb_id is NaN and _new_frac compares NaN against
+# the window's real ids, matches none of them, and returns a perfectly finite
+# 1.0: "brand new quarterback" for all 32 teams. A NaN sweep over the output
+# sees a clean, fully-populated, entirely fictional column and passes it. The
+# missingness has to be caught upstream, before arithmetic launders it away.
+#
+# WHY A SPY AND NOT A DECLARATION. A hand-maintained "columns this feature
+# reads" list per angle is only as good as the next author's memory, and its
+# failure mode is silence — forget to register and the gate waves you through,
+# which is the same way QBNEW got here. The spy wraps the games frame and
+# records every column any builder touches, so a new column read is a new column
+# checked with nothing to remember. The residual hole (a builder reaching for
+# data through an access path the spy does not intercept, e.g. .loc or .values)
+# is closed by verify_spy_coverage below, which poisons the columns the spy
+# claims are UNREAD and fails if the panel moves anyway.
+
+# Columns that DEFINE the unplayed slate. A builder must read the score to know
+# a game has not been played yet, so reading them is not a violation — that they
+# are 100% null on unplayed rows is the whole selector. What a builder may not
+# do is let them into a feature VALUE, and the time-ordering leak proof is what
+# polices that. Keeping this list tiny and explicit matters: every name here is
+# a hole in the gate, so nothing goes in that is not literally the outcome.
+OUTCOME_COLS = frozenset({"home_score", "away_score", "result", "total",
+                          "overtime"})
+
+# A column is UNAVAILABLE if it is null on any unplayed row at all. Zero, not
+# "mostly populated": a feature that silently degrades on the 3 games a week it
+# cannot see is still shipping a number nobody can explain, and the gate exists
+# to make that a decision rather than an accident.
+MAX_UNPLAYED_NULL = 0.0
+
+# Populated by run_availability_gate(); consulted by verdict_of(). Module state
+# rather than a parameter because the point is that no call site can forget it.
+AVAILABILITY = {}
+
+
+class _RowSpy:
+    """One itertuples row that records which fields were read.
+
+    getattr on the wrapped row runs FIRST so a missing column still raises
+    AttributeError and `getattr(r, "div_game", 0)` keeps working — a column that
+    does not exist was not read, and recording it would put phantom names in
+    front of the null check.
+    """
+
+    __slots__ = ("_r", "_seen")
+
+    def __init__(self, r, seen):
+        object.__setattr__(self, "_r", r)
+        object.__setattr__(self, "_seen", seen)
+
+    def __getattr__(self, name):
+        v = getattr(self._r, name)
+        self._seen.add(name)
+        return v
+
+
+class ColumnSpy:
+    """A games frame that records every raw column a feature builder reads.
+
+    Supports the access patterns builders actually use — itertuples, column
+    indexing, boolean masking — and forwards everything else to the real frame,
+    RE-WRAPPING any DataFrame that comes back. That re-wrap is the part that
+    matters: nfl_model.state() does `g[g["home_score"].isna()].copy()` before it
+    iterates, and a spy that stopped at the first .copy() would report the
+    prediction loop as reading nothing at all and pass every feature on earth.
+    """
+
+    def __init__(self, df, seen=None):
+        self.__dict__["_df"] = df
+        self.__dict__["_seen"] = set() if seen is None else seen
+
+    @property
+    def seen(self):
+        return self.__dict__["_seen"]
+
+    def _wrap(self, v):
+        return ColumnSpy(v, self.seen) if isinstance(v, pd.DataFrame) else v
+
+    def itertuples(self, *a, **kw):
+        for r in self.__dict__["_df"].itertuples(*a, **kw):
+            yield _RowSpy(r, self.seen)
+
+    def __getitem__(self, key):
+        if isinstance(key, str):
+            self.seen.add(key)
+        elif isinstance(key, (list, tuple)) and all(isinstance(k, str)
+                                                    for k in key):
+            self.seen.update(key)
+        return self._wrap(self.__dict__["_df"][key])
+
+    def __setitem__(self, key, val):
+        self.__dict__["_df"][key] = val
+
+    def merge(self, *a, **kw):
+        """A JOIN KEY IS A READ. nfl_epa_experiment attaches its per-QB EPA with
+        `g.merge(qfeat, on=["game_id", "home_qb_id"])` — the column name only
+        ever appears inside a keyword argument, so an attribute/subscript trace
+        never sees it and the feature looks like it reads nothing but game_id.
+        Recording on/left_on is what makes the EPA harness auditable at all."""
+        for k in ("on", "left_on"):
+            v = kw.get(k)
+            if isinstance(v, str):
+                self.seen.add(v)
+            elif isinstance(v, (list, tuple)):
+                self.seen.update(x for x in v if isinstance(x, str))
+        return self._wrap(self.__dict__["_df"].merge(*a, **kw))
+
+    def __len__(self):
+        return len(self.__dict__["_df"])
+
+    def __getattr__(self, name):
+        if name.startswith("__"):
+            raise AttributeError(name)
+        v = getattr(self.__dict__["_df"], name)
+        # isroutine, not callable: pandas' .loc/.iloc accessors are themselves
+        # callable objects, and wrapping them in a plain function breaks the
+        # `gg.loc[...]` subscript. Only real methods get the re-wrap treatment;
+        # accessors pass through untraced, which is precisely the blind spot
+        # verify_spy_coverage is there to close.
+        if inspect.isroutine(v):
+            def _traced(*a, **kw):
+                return self._wrap(v(*a, **kw))
+            return _traced
+        return self._wrap(v)
+
+
+def columns_touched(builder, g):
+    """Run `builder` against a spied copy of `g`; return the raw columns it read.
+
+    The builder runs over the FULL frame, not just the unplayed slate, because a
+    column read only inside a played-games branch is still a column the feature
+    depends on. Restricting the trace to unplayed rows would let a builder hide
+    its inputs behind `if played:` — which is exactly where build_panel reads
+    home_qb_id.
+    """
+    spy = ColumnSpy(g)
+    builder(spy)
+    # itertuples exposes Index/count/index alongside the real fields; intersect
+    # with the frame's columns so bookkeeping attributes are not audited.
+    return set(spy.seen) & set(g.columns)
+
+
+def unplayed_slate(g):
+    """The rows production actually predicts — the same selector nfl_model.state
+    uses. If this ever stops matching state(), the gate is auditing a different
+    population than the one at risk, so it is written once and read from here."""
+    return g[g["home_score"].isna()]
+
+
+def null_rates(g, cols=None):
+    """Fraction of the UNPLAYED slate on which each column is null."""
+    up = unplayed_slate(g)
+    assert len(up) > 0, (
+        "no unplayed games in games.csv, so the availability gate has nothing "
+        "to check. A gate that silently passes on an empty slate is worse than "
+        "no gate — refresh games.csv before trusting any verdict")
+    cols = list(g.columns) if cols is None else list(cols)
+    return {c: float(up[c].isna().mean()) for c in cols if c in up.columns}
+
+
+def _poisoned(builder_panel, g, col):
+    """Rebuild the panel with `col` blanked. None means the build DIED.
+
+    A builder that raises on a nulled column is the loudest possible statement
+    that it depends on it, so the exception is caught and turned into a
+    dependency rather than a crash — otherwise the gate falls over precisely on
+    the features it exists to catch.
+    """
+    gp = g.copy()
+    # .where(False) rather than `= np.nan`, because assigning a float NaN
+    # RETYPES a string column to float64 and a downstream merge then dies with
+    # "trying to merge on float64 and str". That crash is a dtype accident, not
+    # a dependency, and reading it as one attributes every offending column to
+    # every feature — which is how the EPA harness's prior-only team EPA got
+    # blamed on the quarterback id. Blanking in place keeps the dtype.
+    gp[col] = gp[col].where(pd.Series(False, index=gp.index))
+    try:
+        out = builder_panel(gp)
+    except Exception:
+        return None
+    return out
+
+
+def derived_columns(ref, g, feature_cols=()):
+    """The panel columns a builder DERIVED, as opposed to carried through.
+
+    nfl_epa_experiment's builder returns `g.merge(...)`, so its panel is the
+    whole games table plus a few EPA columns. Comparing whole panels would then
+    make blanking ANY raw column — referee, wind, the moneylines — count as a
+    dependency, and the coverage check would fire on nineteen columns none of
+    which touch a feature. A passthrough is not a read. Compare what the builder
+    computed.
+    """
+    cols = [c for c in ref.columns if c not in set(g.columns)]
+    cols += [c for c in feature_cols if c in ref.columns and c not in cols]
+    return cols
+
+
+def verify_spy_coverage(builder_panel, g, touched, suspect_cols,
+                        feature_cols=()):
+    """Belt and braces: poison the columns the spy says were NOT read.
+
+    The spy sees itertuples, [] and merge keys. If some future builder reaches
+    into the frame another way (.loc, .values, a groupby on the raw frame), the
+    trace would come back short and the gate would pass a feature it never
+    looked at. So take the columns the spy claims are unread AND are unavailable
+    on the slate, blank each one, and rebuild. If the DERIVED columns move, the
+    spy under-reported, and that is a hard error about the GATE rather than
+    about the feature — silently trusting a trace that has been proven wrong is
+    how the first version of this file got written.
+    """
+    ref = builder_panel(g)
+    cmp_cols = derived_columns(ref, g, feature_cols)
+    missed = []
+    for c in suspect_cols:
+        if c in touched or c in OUTCOME_COLS:
+            continue
+        alt = _poisoned(builder_panel, g, c)
+        if alt is None or not _panels_identical(ref, alt, cmp_cols):
+            missed.append(c)
+    return missed
+
+
+def _panels_identical(A, B, cols=None):
+    if len(A) != len(B):
+        return False
+    cols = list(A.columns) if cols is None else list(cols)
+    for c in cols:
+        if c not in B.columns:
+            return False
+        a, b = A[c].values, B[c].values
+        if a.dtype.kind in "fc" and b.dtype.kind in "fc":
+            if not np.allclose(a, b, atol=1e-12, equal_nan=True):
+                return False
+        elif not np.array_equal(a, b):
+            return False
+    return True
+
+
+# Row keys tried in order when lining a poisoned panel up against the reference.
+# Different harnesses name the same game differently and a wrong key silently
+# produces a many-to-many merge, which reads as "everything changed" and
+# attributes every offending column to every feature.
+PANEL_KEYS = (("game_id",),
+              ("season", "week", "home", "away"),
+              ("season", "week", "home_team", "away_team"))
+
+
+def attribute_columns(builder_panel, g, feature_cols, bad_cols):
+    """Which FEATURE depends on which unavailable RAW column.
+
+    The spy answers at builder granularity ("something in build_panel reads
+    home_qb_id"); a verdict is printed per angle, so the gate has to close the
+    gap. Blank one offending raw column, rebuild, and see which feature columns
+    move. Rows that vanish count as a dependency too — build_panel skips games
+    with no qb_id, and "the panel cannot even be built without this column" is a
+    stronger dependency than a changed value, not a weaker one.
+    """
+    ref = builder_panel(g)
+    key = next((list(k) for k in PANEL_KEYS
+                if all(c in ref.columns for c in k)), [])
+    dep = {f: [] for f in feature_cols}
+    for c in bad_cols:
+        alt = _poisoned(builder_panel, g, c)
+        if alt is None or len(alt) == 0:
+            # Nulling the column destroyed the panel: every feature on it is
+            # downstream of the column by definition.
+            for f in feature_cols:
+                dep[f].append(c)
+            continue
+        if key:
+            m = ref.merge(alt, on=key, how="inner", suffixes=("", "_alt"))
+            lost = len(ref) - len(m)
+        elif len(alt) == len(ref):
+            # No usable key but the same rows in the same order: compare
+            # positionally rather than declaring a blanket dependency, which
+            # would name every column in the reason string and tell nobody
+            # anything.
+            m = pd.concat([ref.reset_index(drop=True),
+                           alt.reset_index(drop=True).add_suffix("_alt")],
+                          axis=1)
+            lost = 0
+        else:
+            for f in feature_cols:
+                dep[f].append(c)
+            continue
+        for f in feature_cols:
+            if f not in m.columns or f + "_alt" not in m.columns:
+                dep[f].append(c)
+                continue
+            moved = not np.allclose(pd.to_numeric(m[f], errors="coerce").values,
+                                    pd.to_numeric(m[f + "_alt"],
+                                                  errors="coerce").values,
+                                    atol=1e-12, equal_nan=True)
+            if moved or lost > 0:
+                dep[f].append(c)
+    return dep
+
+
+def run_availability_gate(builder_panel, g, feature_cols, label="",
+                          out=print, register=True, verify=True):
+    """THE GATE. Fails loudly and by name; returns {feature: reason or None}.
+
+    `builder_panel` is any callable frame -> panel DataFrame, so this works for
+    build_panel, for a single production feature, or for nfl_model's own
+    prediction path — the whole point is that it is not specific to QBNEW.
+    """
+    up = unplayed_slate(g)
+    rates = null_rates(g)
+    touched = columns_touched(builder_panel, g)
+    audited = sorted(touched - OUTCOME_COLS)
+    bad = sorted(c for c in audited if rates.get(c, 0.0) > MAX_UNPLAYED_NULL)
+
+    out("--- GATE 0: AVAILABILITY %s" % label)
+    out("    production predicts %d unplayed games; a feature that reads a "
+        "column" % len(up))
+    out("    null on those rows scored its backtest gain on data it will never "
+        "have.")
+    out("    columns read by this builder: %s" % ", ".join(audited))
+    for c in audited:
+        r = rates.get(c, 0.0)
+        out("      %-18s unplayed-null %6.1f%%   %s"
+            % (c, 100 * r, "OK" if r <= MAX_UNPLAYED_NULL else "UNAVAILABLE"))
+
+    if verify:
+        suspect = [c for c, r in rates.items() if r > MAX_UNPLAYED_NULL]
+        missed = verify_spy_coverage(builder_panel, g, touched, suspect,
+                                     feature_cols)
+        assert not missed, (
+            "AVAILABILITY GATE IS BROKEN: blanking %s changed the panel even "
+            "though the column spy never saw it read. The trace is incomplete, "
+            "so every PASS this gate has printed is unverified." % missed)
+
+    result = {f: None for f in feature_cols}
+    if bad:
+        dep = attribute_columns(builder_panel, g, feature_cols, bad)
+        for f in feature_cols:
+            if dep[f]:
+                result[f] = ("reads %s, null on %s of the %d unplayed games"
+                             % ("/".join(dep[f]),
+                                "/".join("%.0f%%" % (100 * rates[c])
+                                         for c in dep[f]), len(up)))
+        out("    UNAVAILABLE COLUMNS: %s" % ", ".join(bad))
+        for f in feature_cols:
+            out("      %-10s %s" % (f, result[f] or "available"))
+    else:
+        out("    all columns available on the live slate — gate passed")
+    out("")
+
+    if register:
+        AVAILABILITY.update(result)
+    return result
+
+
+def qb_panel_frame(g):
+    """build_panel's panel alone — the shape run_availability_gate expects."""
+    return build_panel(g)[0]
+
+
+def production_rest_panel(g):
+    """A CONTROL for the gate: a feature that IS legitimately available.
+
+    The rest-day differential, the neutral-site flag and the divisional flag are
+    what nfl_model already applies to every live prediction, so by construction
+    they must clear a gate about live computability. A gate that has only ever
+    been demonstrated failing is not evidence it can pass — without this control
+    a gate that rejected everything would look exactly as convincing as a
+    correct one.
+    """
+    rows = []
+    for r in g.itertuples():
+        if not (pd.notna(r.home_score) and pd.notna(r.away_score)):
+            continue
+        rest = 0.0
+        if pd.notna(r.home_rest) and pd.notna(r.away_rest):
+            rest = NM.REST_PER_DAY * ((r.home_rest - 7) - (r.away_rest - 7))
+        rows.append({"season": int(r.season), "week": int(r.week),
+                     "home": r.home_team, "away": r.away_team,
+                     "restdiff": rest,
+                     "hfa": 0.0 if str(r.location) == "Neutral" else 1.0,
+                     "div": float(getattr(r, "div_game", 0) == 1)})
+    return pd.DataFrame(rows)
+
+
+PRODUCTION_FEATURES = ["restdiff", "hfa", "div"]
+
+# nfl_model.load() reads these off the CSV before any spy can be attached (it
+# does the read itself), so they are declared rather than traced. Declared and
+# audited beats invisible: they are the filter/sort keys, and a null game_type
+# on the live slate would silently drop games from the prediction set.
+LOADER_COLS = frozenset({"game_type", "gameday", "season", "week"})
+
+
+def audit_production_model(g, out=print):
+    """Null-rate audit of every raw column nfl_model actually reads, split by
+    WHERE it reads it. Returns (backtest_cols, prediction_cols, rates).
+
+    TWO traces, not one, because the split IS the finding. run_elo reads
+    home_moneyline to score the backtest and moneylines are 75% null on the
+    unplayed slate — which is fine, a backtest only ever runs on played games.
+    The same column read inside state()'s unplayed loop would be a live bug.
+    Merging the traces would either raise a false alarm on the moneylines or
+    bury a real alarm underneath them.
+
+    The prediction trace is taken by handing state() a spied frame and stubbing
+    run_elo with its already-computed answer, so the only thing still touching
+    the frame is the unplayed loop itself. Tracing state() rather than
+    re-deriving its column list by hand is the point: a hand list goes stale the
+    first time somebody adds a term to the live prediction.
+    """
+    spy_bt = ColumnSpy(g)
+    NM.run_elo(spy_bt, start_season=TRAIN_LO)
+    bt = set(spy_bt.seen) & set(g.columns)
+
+    R, P, H = NM.run_elo(g)
+    spy_pr = ColumnSpy(g)
+    _load, _elo = NM.load, NM.run_elo
+    try:
+        NM.load = lambda: spy_pr
+        NM.run_elo = lambda gg, **kw: (R, P, H)
+        NM.state()
+    finally:
+        NM.load, NM.run_elo = _load, _elo
+    pr = set(spy_pr.seen) & set(g.columns)
+
+    rates = null_rates(g)
+    up = unplayed_slate(g)
+    out("--- AUDIT: every raw column nfl_model reads, vs the %d unplayed rows "
+        "it predicts" % len(up))
+    for c in sorted((bt | pr | LOADER_COLS) & set(g.columns)):
+        where = ("PREDICTION" if c in pr and c not in OUTCOME_COLS
+                 else ("outcome/selector" if c in OUTCOME_COLS
+                       else ("backtest only" if c in bt else "load/filter")))
+        r = rates.get(c, 0.0)
+        flag = ""
+        if c in pr and c not in OUTCOME_COLS and r > MAX_UNPLAYED_NULL:
+            # 100% null = the term is uncomputable on every live game. Partial
+            # = computable on some of the slate, which is a DECISION (guard and
+            # degrade, or drop the term) and the gate's job is to force it to be
+            # made on purpose rather than discovered in a dashboard.
+            flag = ("  <-- UNCOMPUTABLE LIVE" if r >= 1.0
+                    else "  <-- PARTIAL: confirm the read is guarded")
+        out("    %-18s %-16s unplayed-null %6.1f%%%s" % (c, where, 100 * r,
+                                                         flag))
+    live_bad = sorted(c for c in pr
+                      if c not in OUTCOME_COLS
+                      and rates.get(c, 0.0) > MAX_UNPLAYED_NULL)
+    out("    prediction-path columns not fully available: %s"
+        % (", ".join(live_bad) if live_bad else "none"))
+    out("")
+    return bt, pr, rates
+
+
+# ---------------------------------------------------------------------------
 # scoring
 # ---------------------------------------------------------------------------
 
@@ -318,9 +799,34 @@ def score_angle(P, col, ys=None, extra=()):
             mean_ll(ph_b, yh), mean_ll(ph_t, yh))
 
 
-def verdict_of(d_ll, per):
+def verdict_of(d_ll, per, col=None, enforce=True):
+    """The single place the string "ROBUST WIN" is produced, which is why the
+    availability gate is enforced HERE rather than printed alongside gates 1-4.
+
+    Gates 1, 2 and 4 are advisory: they print a line and a human decides. That
+    is how QBNEW got to the edge of production with a clean sheet. Availability
+    is not a judgement call — a feature whose inputs do not exist at prediction
+    time cannot be shipped at any effect size — so it blocks at the chokepoint
+    and no caller can forget to consult it. `col` is REQUIRED once the gate has
+    run: an angle that was never audited raises rather than passing quietly,
+    because the failure mode being fixed is a feature slipping through unasked.
+
+    enforce=False is for the two callers that are NOT judging a feature. The
+    probe's plant counter and the placebo's alpha both ask "how often does the
+    ship rule fire on outcomes I generated", which is a property of the
+    STATISTICS, and blocking those makes gate 1 report "a planted effect was
+    never recovered" when the truth is that the counter was gagged. The reported
+    verdict for an angle always enforces; the calibration counters never do.
+    """
     good = sum(1 for v in per.values() if v > 0)
     n = len(per)
+    if enforce and AVAILABILITY:
+        assert col is not None and col in AVAILABILITY, (
+            "verdict_of was asked to judge %r but the availability gate never "
+            "audited it. Add it to the gate's feature list or the gate is "
+            "decorative." % (col,))
+        if AVAILABILITY[col]:
+            return "BLOCKED (unavailable at prediction time)", good, n
     if d_ll <= 0:
         return "NULL", good, n
     if good >= max(1, n - 1):
@@ -425,7 +931,10 @@ def probe(P, col, seeds=(7, 17, 29), extra=(), d_real=None):
             oracles.append(o)
             d, per, _, _ = score_angle(P, col, ys=ys, extra=extra)
             fits.append(d)
-            v, _, _ = verdict_of(d, per)
+            # enforce=False: this counts how often a PLANTED effect survives
+            # the ship rule, i.e. the pipeline's power. Availability is a fact
+            # about the column, not about the synthetic outcomes being scored.
+            v, _, _ = verdict_of(d, per, col, enforce=False)
             robs += int(v == "ROBUST WIN")
         return dict(plant_b=plant_b, oracle=float(np.mean(oracles)),
                     lo=float(np.min(oracles)), hi=float(np.max(oracles)),
@@ -507,7 +1016,10 @@ def placebo(P, col, n=200, seed=5, within_season=True, extra=(), d_real=None):
             xs = rng.permutation(x)
         Q[col] = xs
         d, per, _, _ = score_angle(Q, col, extra=extra)
-        v, _, _ = verdict_of(d, per)
+        # enforce=False for the same reason as in probe(): alpha is the ship
+        # rule's false-positive rate on shuffled noise, and a blocked column
+        # would report alpha 0 and read as a gate that never fires.
+        v, _, _ = verdict_of(d, per, col, enforce=False)
         hits += int(v == "ROBUST WIN")
         if d_real is not None and d >= d_real:
             ge += 1
@@ -568,6 +1080,20 @@ def experiment(out=print):
     out("playing. QBCHG/QBNEW/QBEARN/QBRES are all ways of asking that.")
     out("")
 
+    # GATE 0 RUNS FIRST AND ON PURPOSE. Gates 1-4 are all measurements of how
+    # much an angle buys; there is no point paying for them before establishing
+    # that the angle can be computed at all, and running the cheap disqualifier
+    # last is how a disqualified feature ends up with four green lines above it.
+    out("-" * 78)
+    AVAILABILITY.clear()
+    run_availability_gate(qb_panel_frame, g, [c for _, c in ANGLES],
+                          label="— the five QB angles", out=out)
+    # The control. Same gate, same slate, a feature production already ships.
+    run_availability_gate(production_rest_panel, g, PRODUCTION_FEATURES,
+                          label="— CONTROL: rest/HFA/divisional, already live",
+                          out=out, register=False)
+    audit_production_model(g, out=out)
+
     def _pass(label, extra=()):
         out("-" * 78)
         out(label)
@@ -578,7 +1104,7 @@ def experiment(out=print):
                 continue
             d, per, bll, tll = score_angle(P, col, extra=extra)
             base_ll = bll
-            v, good, nn = verdict_of(d, per)
+            v, good, nn = verdict_of(d, per, col)
             results[col] = (name, d, per, v)
             out("%-46s holdout dLL %+.5f  seasons %d/%d  -> %s"
                 % (name, d, good, nn, v))
@@ -647,13 +1173,16 @@ def experiment(out=print):
             out("%-46s subset too small for a shape read" % name)
             continue
         d, per, _, _ = score_angle(Ps, col)
-        v, good, nn = verdict_of(d, per)
+        v, good, nn = verdict_of(d, per, col)
         out("%-46s one-sided-change subset dLL %+.5f  %d/%d  -> %s"
             % (name, d, good, nn, v))
 
     out("=" * 78)
-    out("Ship rule: ROBUST WIN in PASS 2, a measured gain under the ORACLE")
-    out("bound, a placebo that does not fire, and a shape that holds.")
+    out("Ship rule: GATE 0 clear, then a ROBUST WIN in PASS 2, a measured gain")
+    out("under the ORACLE bound, a placebo that does not fire, and a shape that")
+    out("holds. Gate 0 is a veto and not a vote: gates 1-4 measure how much an")
+    out("angle buys, and no size of gain makes a column that does not exist on")
+    out("the live slate shippable.")
     out("=" * 78)
     return P, r1, r2
 
@@ -720,6 +1249,36 @@ def _synth(seed=3, n_seasons=14, n_teams=16, qb_effect=0.0):
     g = pd.DataFrame(rows)
     g["gameday"] = pd.to_datetime(g["gameday"])
     return g.sort_values(["season", "week"]).reset_index(drop=True)
+
+
+def _with_unplayed_slate(g, n_games=16):
+    """Append an UNPLAYED week shaped like the real one nflverse ships.
+
+    _synth only makes finished games, so the availability gate would find an
+    empty slate and its own assertion would fire — which proves nothing about
+    the gate. The appended rows carry the fields that ARE known before kickoff
+    (teams, rest, location, divisional flag) and leave null exactly what nflverse
+    leaves null on a future game: the scores and BOTH quarterback ids. The whole
+    defect being tested is that a schedule row does not know who will start.
+    """
+    teams = sorted(set(g["home_team"]) | set(g["away_team"]))
+    last = g.iloc[-1]
+    rows = []
+    for i in range(n_games):
+        h, a = teams[(2 * i) % len(teams)], teams[(2 * i + 1) % len(teams)]
+        rows.append(dict(
+            game_id="future_%02d" % i, season=int(last["season"]),
+            game_type="REG", week=int(last["week"]) + 1,
+            gameday=last["gameday"] + pd.Timedelta(days=7), weekday="Sunday",
+            away_team=a, away_score=np.nan, home_team=h, home_score=np.nan,
+            location="Home", result=np.nan, total=np.nan, overtime=np.nan,
+            home_rest=7, away_rest=7, div_game=0,
+            home_moneyline=np.nan, away_moneyline=np.nan, spread_line=np.nan,
+            home_qb_id=np.nan, away_qb_id=np.nan,
+            home_qb_name=np.nan, away_qb_name=np.nan))
+    up = pd.DataFrame(rows)
+    return pd.concat([g, up.reindex(columns=g.columns)],
+                     ignore_index=True)
 
 
 def selftest():
@@ -799,6 +1358,103 @@ def selftest():
     same = np.allclose(P[cols].values[:k], P2[cols].values[:k], atol=1e-12)
     assert same, "a later game's result leaked into earlier features"
 
+    # ---- GATE 0: availability, BOTH directions ----------------------------
+    # The leak proof above is a TIME-ORDERING proof and QBNEW passes it. It has
+    # to be paired with an AVAILABILITY proof or the pair of them still lets an
+    # uncomputable feature through, which is the exact history of this file.
+    gs = _with_unplayed_slate(g)
+    assert len(unplayed_slate(gs)) == 16
+
+    # DIRECTION 1 — the real defect must FAIL, by name.
+    bad = run_availability_gate(qb_panel_frame, gs, [c for _, c in ANGLES],
+                                out=lambda s="": None, register=False)
+    for col in ("qbchg", "qbnew", "qbexp", "qbearn", "qbres"):
+        assert bad[col], (
+            "%s reads the started-QB id and the availability gate passed it — "
+            "the gate cannot see the bug it was written for" % col)
+        assert "home_qb_id" in bad[col] and "away_qb_id" in bad[col], (
+            "%s was blocked but the reason does not name the offending "
+            "columns: %r. A gate that fails without naming the column is a "
+            "gate nobody can act on" % (col, bad[col]))
+
+    # DIRECTION 2 — a feature production already ships must PASS. Without this
+    # a gate that rejected every input on earth would look identical to a
+    # correct one from the QBNEW output alone.
+    ok = run_availability_gate(production_rest_panel, gs, PRODUCTION_FEATURES,
+                               out=lambda s="": None, register=False)
+    assert all(v is None for v in ok.values()), (
+        "the rest/HFA/divisional terms are computed on every live prediction "
+        "today and the gate blocked them: %r" % ok)
+
+    # THE BLOCK MUST BITE. A blocked column may not print ROBUST WIN no matter
+    # how good its holdout numbers are — that is the entire point of putting the
+    # check inside verdict_of instead of printing it next to gates 1-4.
+    winner = {2020: 0.01, 2021: 0.01, 2022: 0.01, 2023: 0.01,
+              2024: 0.01, 2025: 0.01}
+    _saved = dict(AVAILABILITY)
+    try:
+        AVAILABILITY.clear()
+        AVAILABILITY.update({"qbnew": "reads home_qb_id", "restdiff": None})
+        v_block, _, _ = verdict_of(0.0100, winner, "qbnew")
+        assert v_block.startswith("BLOCKED"), (
+            "an unavailable column scored +0.01 across 6/6 holdout seasons and "
+            "verdict_of returned %r — the gate does not block a WIN" % v_block)
+        v_ok, _, _ = verdict_of(0.0100, winner, "restdiff")
+        assert v_ok == "ROBUST WIN", (
+            "an AVAILABLE column with the same numbers came back %r — the gate "
+            "is blocking everything, not just the unavailable" % v_ok)
+        # An angle nobody audited must RAISE, not sail through. Silence is how
+        # the next feature repeats this bug.
+        try:
+            verdict_of(0.0100, winner, "qbnever_registered")
+            raise AssertionError(
+                "verdict_of judged a column the gate never audited instead of "
+                "raising — a new angle could skip the gate by not being in it")
+        except AssertionError as e:
+            assert "availability gate never audited" in str(e), e
+    finally:
+        AVAILABILITY.clear()
+        AVAILABILITY.update(_saved)
+
+    # THE SPY'S BLIND SPOT MUST BE COVERED. A builder that reaches for a column
+    # through .loc is invisible to the trace; verify_spy_coverage exists to
+    # catch exactly that, and if it ever stops working the gate degrades to
+    # "whatever the spy happened to see" without saying so.
+    def _sneaky(gg):
+        pnl = production_rest_panel(gg)
+        # read spread_line (null on the live slate) WITHOUT the spy seeing it.
+        # Counting non-nulls rather than summing, because _synth's spread_line
+        # is a constant 0.0 and a sum of it survives blanking unchanged — the
+        # poison check can only see a column the builder genuinely depends on.
+        pnl["sneak"] = float(gg.loc[:, "spread_line"].notna().sum())
+        return pnl
+
+    touched_sneaky = columns_touched(_sneaky, gs)
+    assert "spread_line" not in touched_sneaky, (
+        "the .loc read was traced after all, so this case no longer exercises "
+        "the spy's blind spot and verify_spy_coverage is untested")
+    missed = verify_spy_coverage(
+        _sneaky, gs, touched_sneaky,
+        [c for c, r in null_rates(gs).items() if r > MAX_UNPLAYED_NULL])
+    assert "spread_line" in missed, (
+        "a builder read an unavailable column behind the spy's back and "
+        "verify_spy_coverage did not notice — the gate silently degrades to "
+        "trusting an incomplete trace")
+
+    # A JOIN KEY IS A READ. nfl_epa_experiment attaches its per-QB feature with
+    # merge(on=[..., "home_qb_id"]) and nothing else in that function mentions
+    # the column, so a trace that only watches attribute and subscript access
+    # reports the QB-EPA term as depending on game_id alone — a clean pass on
+    # the same defect this gate exists to catch, in a different harness.
+    def _joiner(gg):
+        side = pd.DataFrame({"home_qb_id": ["x"], "junk": [1.0]})
+        gg.merge(side, on=["home_qb_id"], how="left")
+        return production_rest_panel(gg)
+
+    assert "home_qb_id" in columns_touched(_joiner, gs), (
+        "a merge key was not recorded as a column read — any feature that "
+        "joins on the started-QB id would pass this gate")
+
     # ---- CLAIM: a REAL QB effect is recoverable ---------------------------
     # This is the whole point. If the pipeline cannot find an effect that was
     # planted into the data-generating process, then a null on the real panel
@@ -806,7 +1462,7 @@ def selftest():
     gq = _synth(seed=11, qb_effect=0.85)
     Pq, _, _ = build_panel(gq)
     d_new, per_new, _, _ = score_angle(Pq, "qbnew")
-    v_new, good, nn = verdict_of(d_new, per_new)
+    v_new, good, nn = verdict_of(d_new, per_new, "qbnew")
     d_chg, per_chg, _, _ = score_angle(Pq, "qbchg")
     out("planted QB effect: QBNEW %+.5f (%s, %d/%d)  QBCHG %+.5f"
         % (d_new, v_new, good, nn, d_chg))
@@ -826,7 +1482,7 @@ def selftest():
 
     # ---- and a NULL panel must come back null -----------------------------
     d0, per0, _, _ = score_angle(P, "qbnew")
-    v0, _, _ = verdict_of(d0, per0)
+    v0, _, _ = verdict_of(d0, per0, "qbnew")
     assert v0 != "ROBUST WIN", (
         "QBNEW is a ROBUST WIN (%+.5f) on a panel where the QB genuinely does "
         "NOT matter — the test manufactures its own signal" % d0)
@@ -873,10 +1529,11 @@ def selftest():
         "anything" % p_eff)
 
     print("NFL QB SELFTEST PASS — columns live and correctly signed, QBEARN "
-          "silent below 1500, no leak from later games, a planted backup "
-          "penalty is recovered (%+.5f ROBUST WIN) and beats the binary flag "
-          "(%+.5f), and a null panel stays null (%+.5f)"
-          % (d_new, d_chg, d0))
+          "silent below 1500, no leak from later games, the availability gate "
+          "blocks the started-QB columns by name and passes the live "
+          "rest/HFA/divisional terms, a planted backup penalty is recovered "
+          "(%+.5f ROBUST WIN) and beats the binary flag (%+.5f), and a null "
+          "panel stays null (%+.5f)" % (d_new, d_chg, d0))
     return True
 
 

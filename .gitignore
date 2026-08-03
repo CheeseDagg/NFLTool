@@ -1,0 +1,7 @@
+# Play-by-play parquet is ~466MB and is a CACHE, not a source. It is
+# re-downloadable from nflverse by nfl_epa_experiment.py on demand, so
+# committing it would push the repo two orders of magnitude past GitHub's
+# 100MB-per-file / 1GB-repo comfort zone in exchange for nothing.
+data/*.parquet
+__pycache__/
+*.pyc

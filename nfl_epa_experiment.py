@@ -327,6 +327,30 @@ def market_disagreement_acc(P, pcol):
 # =====================================================================
 #  EXPERIMENT DRIVER + VERDICT
 # =====================================================================
+def availability_gate(g, team_game, qb):
+    """GATE 0: are the raw games.csv columns these features read even POPULATED
+    on the unplayed rows nfl_model.state() predicts?
+
+    The rolling-EPA discipline above is a TIME-ORDERING guarantee — shift(1) so
+    the current game never enters its own feature. That is a different property
+    from availability, and w_qb fails the second one: `qb_epa_roll` is attached
+    with merge(on=["game_id", "home_qb_id"]), and home_qb_id is the quarterback
+    who ACTUALLY STARTED, populated on every played game and on none of the
+    unplayed ones. The prior-only EPA itself is fine — prior games are played —
+    so this splits the two halves of the treatment rather than condemning both.
+
+    Traced, not declared, and note that the qb_id dependency lives only inside a
+    merge keyword: nothing in build_game_features ever subscripts the column, so
+    a check that watched attribute access alone would report the QB-EPA term as
+    reading nothing but game_id and pass it.
+    """
+    import nfl_qb_experiment as QBX
+    QBX.run_availability_gate(
+        lambda gg: build_game_features(gg, team_game, qb, window=10),
+        g, ["home_net_epa", "away_net_epa", "home_qb_epa", "away_qb_epa"],
+        label="— EPA/QB-EPA game features", register=False)
+
+
 def experiment(years):
     g = load_games()
     print(f"games.csv: {len(g)} games, seasons {int(g.season.min())}-{int(g.season.max())}")
@@ -346,6 +370,8 @@ def experiment(years):
     print(f"pbp rows: {len(pbp)}")
     team_game, qb = aggregate_epa(pbp)
     print(f"aggregated: {len(team_game)} team-game EPA rows, {len(qb)} qb-game rows")
+
+    availability_gate(g, team_game, qb)
 
     gf = build_game_features(g, team_game, qb, window=10)
 
