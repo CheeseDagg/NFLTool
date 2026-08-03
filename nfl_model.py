@@ -149,11 +149,25 @@ def backtest(P):
     brier = ((P["p_home"] - P["home_win"]) ** 2).mean()
     M = P.dropna(subset=["mkt"])
     macc = ((M["mkt"] > 0.5).astype(int) == M["home_win"]).mean()
+    # LIKE FOR LIKE. `acc` above is over EVERY backtested game; `market_acc` can only
+    # be over the games that carried closing moneylines. Printing those two side by
+    # side compares the model on one game set to the market on another. acc_mkt is the
+    # model's rate on the market's own subset, which is the only fair comparison.
+    pacc = ((M["p_home"] > 0.5).astype(int) == M["home_win"]).mean() if len(M) else np.nan
     dis = M[((M["p_home"] > 0.5) != (M["mkt"] > 0.5))]
     dacc = ((dis["p_home"] > 0.5).astype(int) == dis["home_win"]).mean() if len(dis) else np.nan
+    # THE HALF THIS PANEL WAS MISSING. It reported how often the MODEL was right when
+    # it disagreed with the price and never how often the MARKET was on those same
+    # games. Ties are dropped above, so here the two DO sum to 100 and 44.3% implies
+    # 55.7% -- but a reader has to do that subtraction to see it, and 44.3 reads as
+    # "a bit under half" until 55.7 is sitting next to it. It is counted, not derived,
+    # so the number survives if the tie handling above ever changes.
+    dmk = ((dis["mkt"] > 0.5).astype(int) == dis["home_win"]).mean() if len(dis) else np.nan
     return {"n": n, "acc": round(100 * acc, 1), "brier": round(brier, 4),
             "n_mkt": len(M), "market_acc": round(100 * macc, 1),
-            "n_disagree": len(dis), "model_right_in_disagree": round(100 * dacc, 1)}
+            "acc_mkt": (round(100 * pacc, 1) if len(M) else None),
+            "n_disagree": len(dis), "model_right_in_disagree": round(100 * dacc, 1),
+            "market_right_in_disagree": (round(100 * dmk, 1) if len(dis) else None)}
 
 def state():
     """Live API for the publisher: current ratings + every unplayed scheduled
@@ -218,7 +232,59 @@ def state():
     assert len(ratings) >= 28, f"only {len(ratings)} active teams — franchise filter is wrong"
     return ratings, pd.DataFrame(rows), bt
 
+def _selftest():
+    """Pure checks on the pieces that do not need games.csv or a network.
+
+    This module had NO selftest, and it is the one that computes the number the whole
+    tool is judged on. The daily workflow ran no gate at all, so a change here would
+    have published silently.
+    """
+    # devig: a symmetric pair must land on 0.5, and the favourite must exceed it.
+    assert abs(market_p_home(type("R", (), {"home_ml": -110, "away_ml": -110})()) - 0.5) < 1e-9
+    assert market_p_home(type("R", (), {"home_ml": -300, "away_ml": +250})()) > 0.5
+    assert np.isnan(market_p_home(type("R", (), {"home_ml": np.nan, "away_ml": -110})()))
+    # expected() is monotone and centred
+    assert abs(expected(0) - 0.5) < 1e-12 and expected(100) > 0.5 > expected(-100)
+
+    # BACKTEST SYMMETRY. Four games, all with closing lines, plus one with no line so
+    # that `acc` (all games) and `acc_mkt` (priced subset) are forced apart -- the exact
+    # apples-to-oranges this panel used to print next to market_acc.
+    #   g1 model home .7 / mkt home .6 -> agree, home won      -> both right
+    #   g2 model home .8 / mkt away .4 -> DISAGREE, home won   -> model right
+    #   g3 model home .6 / mkt away .3 -> DISAGREE, away won   -> market right
+    #   g4 model away .2 / mkt away .1 -> agree, away won      -> both right
+    #   g5 model home .9, NO LINE, away won -> drags acc down, invisible to acc_mkt
+    P = pd.DataFrame([
+        {"tie": 0, "p_home": .7, "home_win": 1, "home_ml": -150, "away_ml": +130},
+        {"tie": 0, "p_home": .8, "home_win": 1, "home_ml": +150, "away_ml": -170},
+        {"tie": 0, "p_home": .6, "home_win": 0, "home_ml": +240, "away_ml": -280},
+        {"tie": 0, "p_home": .2, "home_win": 0, "home_ml": +600, "away_ml": -800},
+        {"tie": 0, "p_home": .9, "home_win": 0, "home_ml": np.nan, "away_ml": np.nan},
+        {"tie": 1, "p_home": .5, "home_win": 0, "home_ml": -110, "away_ml": -110},
+    ])
+    b = backtest(P)
+    assert b["n"] == 5 and b["n_mkt"] == 4, b          # the tie is dropped, the no-line game is not
+    assert b["acc"] == 60.0, b                          # 3 of 5 over every game
+    assert b["acc_mkt"] == 75.0, b                      # 3 of 4 over the priced subset
+    assert b["acc"] != b["acc_mkt"], "the fixture must force these apart or it tests nothing"
+    assert b["n_disagree"] == 2, b
+    # THE HALF THAT WAS MISSING. One disagreement each way.
+    assert b["model_right_in_disagree"] == 50.0, b
+    assert b["market_right_in_disagree"] == 50.0, b
+    # ties are dropped, so on this two-way market the two sum to 100. Asserted so that
+    # a future change to tie handling has to come back through this test.
+    assert b["model_right_in_disagree"] + b["market_right_in_disagree"] == 100.0, b
+    # and with no priced games at all the panel must not divide by zero
+    b0 = backtest(pd.DataFrame([{"tie": 0, "p_home": .7, "home_win": 1,
+                                 "home_ml": np.nan, "away_ml": np.nan}]))
+    assert b0["n_mkt"] == 0 and b0["acc_mkt"] is None and b0["market_right_in_disagree"] is None, b0
+    print("NFL MODEL SELFTEST PASS — devig, Elo expectation, and a backtest that reports "
+          "the model and the market over the SAME games, both halves of the disagreement")
+
 if __name__ == "__main__":
+    import sys
+    if "--selftest" in sys.argv:
+        _selftest(); sys.exit(0)
     g = load()
     R, P, H = run_elo(g)
     bt = backtest(P)
@@ -226,6 +292,8 @@ if __name__ == "__main__":
     print(f"  model accuracy:  {bt['acc']}%   (benchmark: 64.6)")
     print(f"  model Brier:     {bt['brier']}")
     print(f"  market accuracy: {bt['market_acc']}%  on {bt['n_mkt']} games  (benchmark: 66.4)")
-    print(f"  disagreements:   {bt['n_disagree']}  — model right {bt['model_right_in_disagree']}%  (benchmark: 693 @ 44.3)")
+    print(f"  model on those same {bt['n_mkt']}: {bt['acc_mkt']}%")
+    print(f"  disagreements:   {bt['n_disagree']}  — model right {bt['model_right_in_disagree']}%, "
+          f"market right {bt['market_right_in_disagree']}%  (benchmark: 693 @ 44.3)")
     top = sorted(R.items(), key=lambda x: -x[1])[:5]
     print("  current top-5 Elo:", ", ".join(f"{t} {r:.0f}" for t, r in top))

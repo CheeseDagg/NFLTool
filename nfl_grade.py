@@ -54,11 +54,27 @@ def summarize(rows):
     if M:
         mn = len(M)
         macc = sum(1 for pm, mm, yy in M if (mm > 0.5) == (yy == 1)) / mn
+        # Like for like: panel["acc"] above is over EVERY graded game, market["acc"]
+        # can only be over the ones that carried a closing line. model_acc is the
+        # model's rate on that same subset, so the two figures describe one game set.
+        pacc = sum(1 for pm, _m, yy in M if (pm > 0.5) == (yy == 1)) / mn
         dis = [(pm, mm, yy) for pm, mm, yy in M if (pm > 0.5) != (mm > 0.5)]
         panel["market"] = {"n": mn, "acc": round(100 * macc, 1),
+                           "model_acc": round(100 * pacc, 1),
                            "disagree_n": len(dis),
                            "disagree_model_right": (round(100 * sum(
                                1 for pm, _m, yy in dis if (pm > 0.5) == (yy == 1)) / len(dis), 1)
+                               if dis else None),
+                           # The number this panel never carried: how often the MARKET
+                           # was right on exactly the games where the model claimed to
+                           # know better. Ties are excluded from `live` above, so on
+                           # this two-way market it is 100 minus the model's rate --
+                           # but leaving a reader to do that subtraction is why the
+                           # backtest's 44.3% read as mediocre for a season instead of
+                           # as "the price wins 55.7% of the head-to-heads". Counted,
+                           # not derived, so it stays correct if ties ever come back in.
+                           "disagree_market_right": (round(100 * sum(
+                               1 for _p, mm, yy in dis if (mm > 0.5) == (yy == 1)) / len(dis), 1)
                                if dis else None)}
     # FIRST SIGHT vs FINAL. The ledger used to freeze p_home at T-30 and grade that,
     # which is a different model from the one on the board. Publishing both numbers
@@ -189,6 +205,18 @@ def selftest():
     assert p["brier"] == round(((0.65-1)**2 + (0.55-0)**2)/2, 4)
     assert p["market"]["n"] == 2 and p["market"]["acc"] == 100.0
     assert p["market"]["disagree_n"] == 1 and p["market"]["disagree_model_right"] == 0.0
+    # BOTH HALVES OF THE DISAGREEMENT, AND ONE GAME SET. The panel used to publish only
+    # the model's rate on its disagreements with the price, and to sit market["acc"]
+    # (priced subset) next to panel["acc"] (every graded game). On the one disagreement
+    # here the model said home, the market said away, and away won: model 0%, market 100%.
+    assert p["market"]["disagree_market_right"] == 100.0, p["market"]
+    # ties are dropped from `live`, so on this two-way market the two DO sum to 100 --
+    # asserted so that a future change to tie handling has to come back through here.
+    assert (p["market"]["disagree_model_right"]
+            + p["market"]["disagree_market_right"]) == 100.0, p["market"]
+    # model_acc is over the 2 priced games, same as market["acc"]; here it equals the
+    # overall acc only because every graded game happened to carry a line.
+    assert p["market"]["model_acc"] == 50.0, p["market"]
     json.dumps(p)
 
     # ---- the refresh: T-30 number must not be what gets graded ----

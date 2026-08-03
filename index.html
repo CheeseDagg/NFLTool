@@ -177,9 +177,17 @@ function render(d){
     }
     if(c.market){
       const m=c.market;
-      h+=`<div class="sub" style="margin-top:10px">vs closing market (live continuation of the 693-game study):
-      market accuracy <b>${m.acc}%</b> on ${m.n} · disagreements so far <b>${m.disagree_n}</b>`+
-      (m.disagree_model_right!=null?` · model right <b style="color:${m.disagree_model_right>=50?'var(--acc2)':'var(--red)'}">${m.disagree_model_right}%</b>`:'')+`</div>`;
+      /* Both halves, over one game set. This line used to print the market's accuracy
+         next to c.acc (which is over EVERY graded game, not the priced subset) and to
+         report only the model's rate on the disagreements. m.model_acc is the
+         like-for-like figure; m.disagree_market_right is the number that actually
+         decides whether a disagreement with the price is worth acting on. */
+      h+=`<div class="sub" style="margin-top:10px">vs closing market (live continuation of the 693-game study),
+      on the <b>${m.n}</b> graded games that carried a closing line:
+      model <b>${m.model_acc!=null?m.model_acc:c.acc}%</b> · market <b>${m.acc}%</b> ·
+      disagreements so far <b>${m.disagree_n}</b>`+
+      (m.disagree_model_right!=null?` · model right <b style="color:${m.disagree_model_right>=50?'var(--acc2)':'var(--red)'}">${m.disagree_model_right}%</b>`:'')+
+      (m.disagree_market_right!=null?` · market right <b>${m.disagree_market_right}%</b>`:'')+`</div>`;
     }
     // T-30 vs game-day. The ledger used to freeze p_home at first sight, which graded
     // a month-stale forecast; it now refreshes until the game is graded and keeps the
@@ -194,10 +202,24 @@ function render(d){
   }
   // method backtest strip
   const b=d.backtest;
-  if(b){$('btBody').innerHTML=`<div class="sub" style="margin-top:6px">verified this build: model <b>${b.acc}%</b> ·
-  Brier <b>${b.brier}</b> · market <b>${b.market_acc}%</b> · disagreements <b>${b.n_disagree}</b> @ model
-  <b>${b.model_right_in_disagree}%</b> right on ${b.n} games — recomputed from raw data every run, so
-  this line moves when the model does. Anything under 50% here means fading the market loses.</div>`;}
+  /* Same fix as the live panel above: b.acc is over all b.n backtested games while
+     b.market_acc is over the b.n_mkt that carried closing lines, so quoting them side
+     by side compared two different game sets. b.acc_mkt is the model on the market's
+     own subset. And the market's rate on the disagreements is stated rather than left
+     to be derived -- "model right 44.3%" reads as a bit under half until "market right
+     55.7%" is next to it, at which point the result is not ambiguous at all. */
+  if(b){
+    const _am=(b.acc_mkt!=null?b.acc_mkt:b.acc), _nm=(b.n_mkt!=null?b.n_mkt:b.n);
+    const _dm=b.market_right_in_disagree;
+    const _fade=(_dm!=null)?(_dm>b.model_right_in_disagree):(b.model_right_in_disagree<50);
+    $('btBody').innerHTML=`<div class="sub" style="margin-top:6px">verified this build, on the
+  <b>${_nm}</b> games that carried a closing line: model <b>${_am}%</b> · market <b>${b.market_acc}%</b> ·
+  Brier <b>${b.brier}</b> · disagreements <b>${b.n_disagree}</b> @ model
+  <b style="color:${_fade?'var(--red)':'var(--acc2)'}">${b.model_right_in_disagree}%</b> right${
+    _dm!=null?` and market <b>${_dm}%</b>`:''} — recomputed from raw data every run, so
+  this line moves when the model does.${_fade?` <b style="color:var(--red)">The price wins the head-to-heads,
+  so fading it with this model loses.</b> The number is a calibrated read of what is likely; it is not an
+  edge over the market and is not presented as one.`:''}</div>`;}
 }
 // cache:'no-store' — GitHub Pages serves slate.json with a long max-age, so without
 // this the page can render yesterday's build for hours and look perfectly current.

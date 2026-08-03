@@ -19,6 +19,21 @@ jobs:
         with: { python-version: "3.12" }
       - name: Install deps
         run: pip install pandas numpy
+      # THE PUBLISH JOB HAD NO GATE OF ANY KIND. It went straight from pip install to
+      # writing the board a reader sees, so a change to the Elo, the devig, the grader
+      # or the edge screen would have published silently and on schedule. Six modules
+      # ship a --selftest and the job that matters ran none of them. node selftest.js
+      # covers the render layer, which had no test at all and is where the sibling repos
+      # have already produced two defects: a panel written to a DOM id that does not
+      # exist, and a market comparison quoting the model over one game set and the
+      # market over another (that second one was live on this page).
+      - name: Selftest gate
+        run: |
+          for m in nfl_model nfl_grade nfl_edge nfl_books; do
+            echo "== $m"; python $m.py --selftest || exit 1
+          done
+      - name: Render-layer gate
+        run: node selftest.js
       - name: Pull data + publish slate
         env:
           ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
@@ -28,6 +43,12 @@ jobs:
       - name: Validate slate.json is browser-parseable
         run: |
           node -e "JSON.parse(require('fs').readFileSync('data/slate.json','utf8')); console.log('slate.json OK for browsers')"
+      # Parseable is not the same as renderable. The gate above ran against the slate
+      # that was already committed; this one runs the same harness against the slate
+      # this job just wrote, so a publish that emits a shape the page cannot render
+      # fails here instead of on the reader's screen.
+      - name: Render-layer gate (fresh slate)
+        run: node selftest.js
       - name: Commit fresh slate
         run: |
           git config user.name "nfl-bot"
