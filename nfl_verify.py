@@ -1,8 +1,10 @@
 """Robustness check for the QB-adjusted Elo before shipping: per-season holdout, and the
 market-disagreement accuracy (the metric the production backtest flags at 44.3%)."""
-import math
+import math, os
 import pandas as pd, numpy as np
-HERE="/root/NFLTool"
+# was hardcoded to /root/NFLTool, which only ever resolved on the machine it was
+# written on — this script could not run from a clone or in CI.
+HERE=os.path.dirname(os.path.abspath(__file__))
 K,HFA_PTS,REVERT,SCALE=20.0,48.0,0.33,400.0; REST_PER_DAY=4.0
 def expected(dr): return 1.0/(1.0+10**(-dr/SCALE))
 def _dec(ml): return ml/100+1 if ml>0 else 100/(-ml)+1

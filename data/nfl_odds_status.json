@@ -1,0 +1,9 @@
+{
+ "checked": "2026-08-03T18:43:25+00:00",
+ "ok": false,
+ "error": "RuntimeError: ODDS_API_KEY secret not set",
+ "rows": null,
+ "games": null,
+ "kept_previous_rows": 0,
+ "note": "odds pull FAILED \u2014 the previous nfl_odds.csv was kept, not overwritten. This is NOT an offseason signal."
+}

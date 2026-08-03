@@ -39,9 +39,23 @@ warnings.simplefilter("ignore")
 HERE = os.path.dirname(os.path.abspath(__file__))
 DATA = os.path.join(HERE, "data")
 
-# ---- Elo params: copied verbatim from nfl_model.py so BASELINE is identical ----
-K, HFA_PTS, REVERT, SCALE = 20.0, 48.0, 0.33, 400.0
-REST_PER_DAY = 4.0
+# ---- Elo params: IMPORTED from nfl_model.py so BASELINE cannot drift ----
+# These used to be "copied verbatim", which held exactly until nfl_model gained an
+# adaptive HFA (EWMA, replacing the fixed 48) and a divisional prediction shrink.
+# The copy kept the old constants, so this experiment's control arm silently became
+# a model that is no longer in production: every EPA verdict was measured against a
+# baseline nobody ships. Selftest (c) caught it at max|diff| = 3.4e-3 -- small enough
+# to look like float noise, large enough to move a 0.001-Brier verdict.
+try:
+    import nfl_model as _NM
+    K, REVERT, SCALE = _NM.K, _NM.REVERT, _NM.SCALE
+    REST_PER_DAY, DIV_TAU = _NM.REST_PER_DAY, _NM.DIV_TAU
+    HFA_INIT, HFA_LR = _NM.HFA_INIT, _NM.HFA_LR
+except Exception:                                  # standalone / no pandas-free import
+    K, REVERT, SCALE = 20.0, 0.33, 400.0
+    REST_PER_DAY, DIV_TAU = 4.0, 0.90
+    HFA_INIT, HFA_LR = 50.0, 1.0
+HFA_PTS = HFA_INIT                                 # legacy alias (starting value only)
 
 # ---- experiment split ----
 TRAIN_SEASONS = range(2010, 2020)   # tune blend weights here
@@ -238,6 +252,7 @@ def run_backtest(g, w_epa=0.0, w_qb=0.0):
     R = {}
     cur_season = None
     preds = []
+    H = HFA_INIT                 # adaptive HFA — mirrors nfl_model.run_elo exactly
     has_epa = "home_net_epa" in g.columns
     for r in g.itertuples():
         if r.season != cur_season:
@@ -249,9 +264,13 @@ def run_backtest(g, w_epa=0.0, w_qb=0.0):
         rest = 0.0
         if pd.notna(r.home_rest) and pd.notna(r.away_rest):
             rest = REST_PER_DAY * ((r.home_rest - 7) - (r.away_rest - 7))
-        hfa = 0.0 if str(r.location) == "Neutral" else HFA_PTS
+        neutral = str(r.location) == "Neutral"
+        hfa = 0.0 if neutral else H
         base_dr = (R[h] + hfa + rest) - R[a]
-        p_base = expected(base_dr)
+        p_upd = expected(base_dr)                 # drives the Elo update (unshrunk)
+        # divisional shrink applies to the REPORTED prediction only, same as production
+        _tau = DIV_TAU if getattr(r, "div_game", 0) == 1 else 1.0
+        p_base = expected(base_dr * _tau)
 
         # ---- EPA treatment adjustment (prediction only, prior-only features) ----
         epa_adj = 0.0
@@ -264,7 +283,9 @@ def run_backtest(g, w_epa=0.0, w_qb=0.0):
             aq = getattr(r, "away_qb_epa", np.nan)
             if pd.notna(hq) and pd.notna(aq):
                 epa_adj += w_qb * QB_TO_ELO * (hq - aq)
-        p_full = expected(base_dr + epa_adj)
+        # the treatment gets the same divisional shrink so the two arms differ ONLY
+        # by the EPA term — otherwise the verdict measures the shrink, not the EPA.
+        p_full = expected((base_dr + epa_adj) * _tau)
 
         if pd.notna(r.home_score) and pd.notna(r.away_score):
             margin = r.home_score - r.away_score
@@ -275,12 +296,14 @@ def run_backtest(g, w_epa=0.0, w_qb=0.0):
                               "home_win": int(margin > 0), "tie": int(margin == 0),
                               "home_ml": getattr(r, "home_moneyline", np.nan),
                               "away_ml": getattr(r, "away_moneyline", np.nan)})
-            # team Elo update — IDENTICAL to nfl_model (uses p_base, no EPA)
+            # team Elo update — IDENTICAL to nfl_model: unshrunk p_upd, no EPA
             mov = math.log(abs(margin) + 1) * (2.2 / (
                 (0.001 * abs(base_dr) if margin * base_dr > 0 else -0.001 * abs(base_dr)) + 2.2))
             s_home = 1.0 if margin > 0 else (0.5 if margin == 0 else 0.0)
-            delta = K * mov * (s_home - p_base)
+            delta = K * mov * (s_home - p_upd)
             R[h] += delta; R[a] -= delta
+            if not neutral:
+                H += HFA_LR * (s_home - p_upd)
     return pd.DataFrame(preds)
 
 
@@ -507,7 +530,13 @@ def _elo_pbase_series(g):
 def _nflmodel_phome_series(g):
     """nfl_model.run_elo p_home sequence for the same frame."""
     import nfl_model
-    _, P = nfl_model.run_elo(g, start_season=START_SEASON)
+    # run_elo returns (R, P, H) since the adaptive-HFA change; this unpacked two and
+    # crashed, which took the whole experiment's --selftest GATE down with it (the
+    # workflow runs the gate before the experiment, so the experiment stopped running
+    # entirely). Index instead of unpacking so a future return-shape change degrades
+    # into a KeyError here rather than silently rebinding P to the wrong object.
+    res = nfl_model.run_elo(g, start_season=START_SEASON)
+    P = res[1]
     return P["p_home"].to_numpy()
 
 

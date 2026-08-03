@@ -13,12 +13,19 @@ nfl_qb_experiment prints that in the header instead of leaving it for a reader
 to notice; see the GATE 0 section of that file for why the check is on raw
 columns rather than on the feature's output.
 """
-import math, sys
+import math, os, sys
 import pandas as pd, numpy as np
 
 import nfl_qb_experiment as QBX
 
-HERE = "/root/NFLTool"
+# was hardcoded to /root/NFLTool — unrunnable from a clone or in CI.
+HERE = os.path.dirname(os.path.abspath(__file__))
+# NOTE: these are a FROZEN copy of nfl_model's 2026-07 constants. Production has since
+# moved to an adaptive HFA and a divisional prediction shrink, so this harness's
+# baseline is NOT the shipped model and its verdict is historical only. It is kept as
+# the record of the QB experiment that produced it; nfl_qb_experiment.py imports the
+# live constants from nfl_model and is the one to extend. Do not read a number out of
+# here and call it current.
 K, HFA_PTS, REVERT, SCALE = 20.0, 48.0, 0.33, 400.0
 REST_PER_DAY = 4.0
 def expected(dr): return 1.0 / (1.0 + 10 ** (-dr / SCALE))

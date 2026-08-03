@@ -32,11 +32,56 @@ DIV_TAU = 0.90   # divisional games: shrink the Elo edge toward 50% at PREDICTIO
                  # (ratings/updates untouched). Walk-forward validated: holdout Brier -0.0003,
                  # improved 5/6 holdout seasons; division rivals upset favorites more often.
 
-def load():
+def load(refresh=True):
+    """Load nflverse games.csv, REFRESHING it every run.
+
+    This used to be `if not os.path.exists(path): download`. games.csv is a TRACKED
+    file, so in CI actions/checkout always puts it there and the download branch never
+    ran: every scheduled build re-read the snapshot frozen into the last commit. The
+    consequences compound quietly --
+
+      * final scores for the current season never arrive, so nfl_grade.grade_all()
+        finds nothing to settle, the Calibration tab stays at n=0 all year, and the
+        live market-disagreement study never gets a single game;
+      * newly scheduled games and reschedules never appear;
+      * the walk-forward "verified this build" strip re-reports last season's number
+        while claiming it was recomputed from raw data this run.
+
+    Measured 2026-08-03 on the committed copy: last game carrying a score was
+    2026-02-08 (the 2025 Super Bowl). Nothing after it could ever be graded.
+
+    So: pull every run, and fail SOFT to the cached copy when the pull fails -- a
+    network blip must not take the whole build down -- but record the failure on
+    load.source / load.error instead of pretending the cache is current. A truncated
+    or unparseable download is rejected rather than written over a good cache.
+    """
     path = os.path.join(HERE, "games.csv")
-    if not os.path.exists(path):
-        print("downloading nflverse games.csv ...")
-        urllib.request.urlretrieve(URL, path)
+    load.source, load.error, load.fetched_rows = "cache", None, None
+    if refresh or not os.path.exists(path):
+        tmp = path + ".tmp"
+        try:
+            req = urllib.request.Request(URL, headers={"User-Agent": "Mozilla/5.0 (NFLTool)"})
+            with urllib.request.urlopen(req, timeout=60) as r, open(tmp, "wb") as f:
+                f.write(r.read())
+            fresh = pd.read_csv(tmp)                       # must parse
+            need = {"season", "week", "gameday", "home_team", "away_team", "home_score"}
+            if not need <= set(fresh.columns):
+                raise ValueError(f"missing columns: {sorted(need - set(fresh.columns))}")
+            # never let a truncated response clobber a good cache
+            if os.path.exists(path):
+                old_n = sum(1 for _ in open(path)) - 1
+                if len(fresh) < old_n * 0.95:
+                    raise ValueError(f"download has {len(fresh)} rows vs cached {old_n} — refusing")
+            os.replace(tmp, path)
+            load.source, load.fetched_rows = "nflverse", len(fresh)
+        except Exception as e:
+            try: os.remove(tmp)
+            except OSError: pass
+            load.error = f"{type(e).__name__}: {e}"
+            if not os.path.exists(path):
+                raise                                      # no cache to fall back to
+            print(f"   ! games.csv refresh FAILED ({load.error}) — using the cached copy. "
+                  f"Scores and schedule may be stale.")
     g = pd.read_csv(path)
     g = g[g["game_type"].isin(["REG", "WC", "DIV", "CON", "SB"])].copy()
     g["gameday"] = pd.to_datetime(g["gameday"], errors="coerce")
@@ -114,6 +159,14 @@ def state():
     """Live API for the publisher: current ratings + every unplayed scheduled
     game with a pregame p_home from today's Elo (HFA + rest applied)."""
     g = load()
+    # Read these immediately — they are function attributes and the next load() wipes them.
+    _scored = g[g["home_score"].notna()]
+    state.data = {"source": load.source, "error": load.error,
+                  "rows": int(len(g)),
+                  "last_scored": (_scored["gameday"].max().strftime("%Y-%m-%d")
+                                  if len(_scored) and pd.notna(_scored["gameday"].max()) else None),
+                  "last_scheduled": (g["gameday"].max().strftime("%Y-%m-%d")
+                                     if pd.notna(g["gameday"].max()) else None)}
     R, P, H = run_elo(g)
     bt = backtest(P)
     up = g[g["home_score"].isna()].copy()
@@ -133,8 +186,36 @@ def state():
                      "p_home": round(100 * expected(_dr * _tau), 1),
                      "neutral": str(r.location) == "Neutral",
                      "spread_line": None if pd.isna(r.spread_line) else float(r.spread_line)})
-    ratings = sorted(({"team": t, "elo": round(v, 1)} for t, v in R.items()),
+    # R accumulates EVERY franchise code seen since 1999, so it carries relocation
+    # ghosts: STL, SD and OAK are still in there. They stop being updated the year
+    # the team moves but the preseason REVERT step keeps pulling them toward 1500,
+    # so they converge on the middle of the table rather than falling off the bottom.
+    # Measured 2026-08-03: 35 keys, with STL 1500 / SD 1498 / OAK 1494 sitting at
+    # ranks 17-19. The publisher then took ratings[:32], which does not drop the
+    # ghosts -- it drops the three genuinely WORST teams, LV 1352, NYJ 1360 and
+    # TEN 1358. The dashboard's power ranking was showing three franchises that do
+    # not exist and hiding three that do.
+    #
+    # Filter to the franchises on the newest season's schedule (which includes
+    # unplayed games, so this is populated from schedule release onward) and return
+    # the whole list -- the publisher must not truncate.
+    cur = int(g["season"].max())
+    _cs = g[g["season"] == cur]
+    active = set(_cs["home_team"]) | set(_cs["away_team"])
+    if len(active) < 20:
+        # newest season barely populated (schedule not out yet): fall back a year
+        # rather than publishing a handful of teams.
+        _pv = g[g["season"] == int(g.loc[g["season"] < cur, "season"].max())]
+        active |= set(_pv["home_team"]) | set(_pv["away_team"])
+    ratings = sorted(({"team": t, "elo": round(v, 1)} for t, v in R.items() if t in active),
                      key=lambda x: -x["elo"])
+    # hand the already-loaded frame to the publisher so it does not pull games.csv a
+    # second time in the same build (and cannot end up grading a DIFFERENT snapshot
+    # than the one the ratings were built from).
+    state.games = g
+    state.n_teams_dropped = len(R) - len(ratings)
+    state.dropped = sorted(set(R) - active)
+    assert len(ratings) >= 28, f"only {len(ratings)} active teams — franchise filter is wrong"
     return ratings, pd.DataFrame(rows), bt
 
 if __name__ == "__main__":

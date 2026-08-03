@@ -1,6 +1,7 @@
 """
 nfl_odds.py — closing-ish NFL moneylines from The Odds API -> data/nfl_odds.csv
-Fail-soft by design: offseason returns zero events and that is a normal state.
+Zero events from a HEALTHY call is a normal state (offseason). A failed call is
+not, and is never allowed to look like one — see main().
 """
 import os, json, csv, urllib.request, urllib.parse, datetime as dt
 
@@ -48,20 +49,55 @@ def rows_from_events(events):
     return out
 
 def main():
+    """Two zero-row states exist and they are NOT the same thing.
+
+      A. the API answered and returned no events  -> nothing is priced. Real, normal
+         in the offseason, and worth writing: it retires yesterday's stale lines.
+      B. the API did not answer                   -> we know nothing.
+
+    The old code collapsed both into "writing empty file (fail-soft)" and then
+    printed "(offseason: none priced yet is normal)". That did two bad things at
+    once: it OVERWROTE the last good nfl_odds.csv with an empty one, destroying data
+    the publisher could still have used, and it labelled an auth failure, a quota
+    exhaustion or a timeout as a season fact. A quiet board and a broken key looked
+    identical from the dashboard, so a broken key could sit there for weeks.
+
+    Now B keeps the existing file and says so. Both states are recorded in
+    data/nfl_odds_status.json so downstream (and the dashboard) can tell them apart
+    instead of inferring from an empty CSV.
+    """
     os.makedirs(DATA, exist_ok=True)
     path = os.path.join(DATA, "nfl_odds.csv")
+    spath = os.path.join(DATA, "nfl_odds_status.json")
+    ts = dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds")
     try:
         rows = rows_from_events(fetch())
     except Exception as e:
-        print(f"odds pull failed ({type(e).__name__}) — writing empty file (fail-soft)")
-        rows = []
+        prev = 0
+        if os.path.exists(path):
+            with open(path) as f:
+                prev = max(sum(1 for _ in f) - 1, 0)
+        st = {"checked": ts, "ok": False, "error": f"{type(e).__name__}: {e}",
+              "rows": None, "games": None, "kept_previous_rows": prev,
+              "note": "odds pull FAILED — the previous nfl_odds.csv was kept, not "
+                      "overwritten. This is NOT an offseason signal."}
+        json.dump(st, open(spath, "w"), indent=1)
+        print(f"odds pull FAILED ({type(e).__name__}) — kept the existing "
+              f"nfl_odds.csv ({prev} rows). This is not 'offseason'.")
+        return 1
     with open(path, "w", newline="") as f:
         w = csv.DictWriter(f, fieldnames=["commence", "home", "away", "book", "home_ml", "away_ml"])
         w.writeheader()
         for r in rows: w.writerow(r)
     games = len({(r['home'], r['away'], r['commence']) for r in rows})
+    json.dump({"checked": ts, "ok": True, "error": None,
+               "rows": len(rows), "games": games, "kept_previous_rows": None,
+               "note": ("API answered with zero priced events — nothing is on the "
+                        "board right now" if not rows else "")},
+              open(spath, "w"), indent=1)
     print(f"nfl_odds.csv: {len(rows)} book-lines across {games} games"
-          + (" (offseason: none priced yet is normal)" if not rows else ""))
+          + (" (API answered, zero events priced — genuinely nothing up)" if not rows else ""))
+    return 0
 
 if __name__ == "__main__":
     main()

@@ -22,8 +22,14 @@ def main():
     os.makedirs(DATA, exist_ok=True)
     print("1) model + walk-forward…")
     ratings, up, bt = nfl_model.state()
+    # function attributes — read now, before anything else calls state()/load()
+    dstat = dict(getattr(nfl_model.state, "data", {}))
+    dstat["dropped_franchises"] = getattr(nfl_model.state, "dropped", [])
     print(f"   {len(ratings)} teams | backtest: {bt['acc']}% vs market {bt['market_acc']}% "
           f"({bt['n_disagree']} disagreements @ {bt['model_right_in_disagree']}%)")
+    print(f"   games.csv from {dstat.get('source')} | {dstat.get('rows')} rows | "
+          f"last scored {dstat.get('last_scored')}"
+          + (f" | REFRESH FAILED: {dstat['error']}" if dstat.get("error") else ""))
 
     print("2) upcoming window…")
     up["gameday"] = pd.to_datetime(up["gameday"], errors="coerce")
@@ -43,9 +49,33 @@ def main():
     op = os.path.join(DATA, "nfl_odds.csv")
     if os.path.exists(op):
         with open(op) as f: odds_rows = list(csv.DictReader(f))
+    # An empty odds file used to be reported as "no priced games yet (offseason)"
+    # unconditionally, but nfl_odds.py writes an empty file only when the API
+    # ANSWERED with zero events; when the pull fails it now keeps the old file and
+    # records why in nfl_odds_status.json. Read that instead of guessing from the
+    # CSV, or a dead API key reads as a quiet week forever.
+    ostat = {}
+    sp = os.path.join(DATA, "nfl_odds_status.json")
+    if os.path.exists(sp):
+        try:
+            with open(sp) as f: ostat = json.load(f)
+        except Exception:
+            ostat = {}
     edges = nfl_edge.find_edges(odds_rows) if odds_rows else []
-    edge_note = "" if edges else ("no priced games yet (offseason)" if not odds_rows
-                                  else "no side clears the 1% line-shop bar today")
+    _unb = getattr(nfl_edge.find_edges, "_no_bettable", 0)
+    if edges:
+        edge_note = ""
+    elif ostat.get("ok") is False:
+        edge_note = (f"odds pull FAILED ({ostat.get('error', 'unknown')}) at "
+                     f"{ostat.get('checked', '?')} — prices below, if any, are stale. "
+                     f"This is not an offseason signal.")
+    elif not odds_rows:
+        edge_note = "the book feed answered with zero priced games (offseason)"
+    elif _unb and not any(nfl_edge.is_bettable(r["book"]) for r in odds_rows):
+        edge_note = (f"{_unb} game(s) priced, none at "
+                     f"{'/'.join(sorted(nfl_edge.BETTABLE))} — nothing quotable")
+    else:
+        edge_note = "no side clears the 1% line-shop bar today"
     # market consensus per game for the prediction log
     mkt = {}
     if odds_rows:
@@ -60,7 +90,9 @@ def main():
             mkt[k] = round(100*statistics.median(fh), 1)
 
     print("4) grade past predictions + log this slate…")
-    g = nfl_model.load()
+    # the SAME frame state() rated off — not a second download (see nfl_model.state)
+    g = getattr(nfl_model.state, "games", None)
+    if g is None: g = nfl_model.load()
     done = g[g["home_score"].notna()]
     results = {(int(r.season), int(r.week), r.home_team, r.away_team):
                (r.home_score - r.away_score) for r in done.itertuples()}
@@ -85,8 +117,16 @@ def main():
     out = {"generated": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
            "slate_date": _gd[0] if _gd else None,
            "slate_end": _gd[-1] if _gd else None,
-           "games": games, "ratings": ratings[:32],
+           # NOT ratings[:32]. nfl_model.state() already filters to the franchises on
+           # the current schedule; slicing the top 32 off a 35-key dict kept the
+           # relocation ghosts (STL/SD/OAK, parked near 1500 by the preseason revert)
+           # and dropped the three worst real teams instead.
+           "games": games, "ratings": ratings,
            "edges": edges, "edge_note": edge_note,
+           "odds_status": ostat, "bettable": sorted(nfl_edge.BETTABLE),
+           # where games.csv actually came from this run. A frozen tracked snapshot
+           # (the old behaviour) is invisible from the outside — this makes it not.
+           "data_status": dstat,
            "backtest": bt, "cal": cal}
     with open(os.path.join(DATA, "slate.json"), "w") as f:
         json.dump(_scrub(out), f, indent=1, allow_nan=False)

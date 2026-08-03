@@ -69,22 +69,28 @@ footer{color:var(--dim);font-size:.72rem;text-align:center;margin-top:26px}
   <div class="card"><h3>Calibration — the model, graded live</h3>
   <div class="sub">Every published win probability is settled against the final score and graded here —
   including a LIVE continuation of the disagreement study: when this model and the closing market pick
-  opposite sides going forward, who wins? (Historical answer: the market, 55.7% of the time.)</div>
+  opposite sides going forward, who wins? (Historical answer: the market, by a wide margin — see Method
+  for the current recomputed figure.)</div>
   <div id="calBody"><div class="empty">grading begins once published games go final</div></div></div>
 </section>
 
 <section id="t-method" style="display:none">
   <div class="card"><h3>Method — and the honest verdict</h3>
   <div class="sub" style="font-size:.86rem;line-height:1.65">
-  <b>Win%:</b> margin-aware Elo (K=20, log-margin multiplier, autocorrelation damping), home field ~48
-  Elo, rest-day differential, one-third preseason regression. 64.6% walk-forward over 16 seasons
-  (4,350 games, Brier 0.2205).<br><br>
-  <b>The measured verdict:</b> the closing market hits 66.4% on the same games. In the 693 games where
-  model and market disagreed, the model was right 44.3% — <b>fading the market with this model loses
-  money</b>, measured, not inferred. So the Edges tab sizes line-shopping only; model win% is never
-  used as a betting signal.<br><br>
-  <b>Edges:</b> per-book devig → median no-vig consensus → best available price → quarter-Kelly on the
-  price gap, 2% bankroll cap, 3-book minimum.<br><br>
+  <b>Win%:</b> margin-aware Elo (K=20, log-margin multiplier, autocorrelation damping), adaptive
+  home-field advantage (EWMA on the home-win residual, tracking the post-2020 decline with no
+  look-ahead), rest-day differential, divisional shrink at prediction time, one-third preseason
+  regression. Ratings are filtered to franchises on the current schedule — relocation ghosts
+  (STL/SD/OAK) are excluded rather than silently displacing real teams.<br><br>
+  <b>The measured verdict:</b> the closing market beats this model outright, and in the games where the
+  two disagree the model is right well under half the time — <b>fading the market with this model loses
+  money</b>, measured, not inferred. The live numbers are at the bottom of this tab, recomputed from raw
+  data on every build. So the Edges tab sizes line-shopping only; model win% is never used as a betting
+  signal.<br><br>
+  <b>Edges:</b> per-book devig → median no-vig consensus (every book feeds it) → best available price
+  <i>at a book you can actually bet</i> → quarter-Kelly on the price gap, 2% bankroll cap, 3-book
+  minimum. A better number at a book you have no account at is not a better price, so it is disclosed
+  in the "field best" column and never priced off.<br><br>
   <b>Grading:</b> every published probability is logged pre-game and settled against the final score;
   the Calibration tab is the model's public report card, including the live disagreement record.</div>
   <div id="btBody"></div></section>
@@ -106,11 +112,26 @@ function render(d){
   var _end=d.slate_end||'';
   var _n=new Date();
   var _t=_n.getFullYear()+'-'+String(_n.getMonth()+1).padStart(2,'0')+'-'+String(_n.getDate()).padStart(2,'0');
+  var _warn='';
   if(_end && _end<_t){
-    $('meta').innerHTML='<span style="color:#e5533c;font-weight:800">⚠ STALE SLATE — these games are through '+_end+' (today is '+_t+'). The daily build hasn\'t refreshed.</span><br>'+_meta;
-  } else {
-    $('meta').textContent=_meta;
+    _warn+='<span style="color:#e5533c;font-weight:800">⚠ STALE SLATE — these games are through '+_end+' (today is '+_t+'). The daily build hasn\'t refreshed.</span><br>';
   }
+  // A dead API key used to be indistinguishable from a quiet offseason board: both
+  // showed an empty Edges tab. odds_status.ok===false is a BROKEN FEED and says so.
+  if(d.odds_status && d.odds_status.ok===false){
+    _warn+='<span style="color:#e5533c;font-weight:800">⚠ ODDS FEED DOWN ('+(d.odds_status.error||'unknown')+
+           ') as of '+(d.odds_status.checked||'?')+' — market column and edges are stale or absent. This is not the offseason.</span><br>';
+  }
+  // games.csv is a tracked file, so a failed refresh silently re-reads a snapshot
+  // frozen into the repo — ratings, scores and grading all quietly stop advancing.
+  var _ds=d.data_status||{};
+  if(_ds.error){
+    _warn+='<span style="color:#e5533c;font-weight:800">⚠ SCHEDULE/SCORE DATA NOT REFRESHED ('+_ds.error+
+           ') — running on a cached games.csv, last final score '+(_ds.last_scored||'unknown')+
+           '. Ratings and grading are frozen.</span><br>';
+  }
+  if(_ds.last_scored){ _meta+=' · data '+(_ds.source||'?')+', last final score '+_ds.last_scored; }
+  if(_warn){ $('meta').innerHTML=_warn+_meta; } else { $('meta').textContent=_meta; }
   // slate — likelihood-first, full week
   if(d.games&&d.games.length){
     $('slateBody').innerHTML=`<table><tr><th>wk</th><th>date</th><th>matchup</th>
@@ -126,13 +147,18 @@ function render(d){
   }
   // edges
   if(d.edges&&d.edges.length){
-    $('edgesBody').innerHTML=`<table><tr><th>matchup</th><th>bet</th><th class="num">best price</th>
-    <th class="num">fair</th><th class="num">edge</th><th class="num">stake</th><th class="hide-m">book</th></tr>`+
+    // "best price" means best price AT A BOOK YOU CAN BET. any_price is the field's
+    // top number when it beats the quote — shown so the cost of the restriction is
+    // visible, never used to price the edge.
+    $('edgesBody').innerHTML=`<div class="sub">quotes restricted to <b>${(d.bettable||['fanduel']).join('/')}</b> — consensus still pools every book</div>
+    <table><tr><th>matchup</th><th>bet</th><th class="num">best price</th>
+    <th class="num">fair</th><th class="num">edge</th><th class="num">stake</th><th class="hide-m">book</th><th class="hide-m num">field best</th></tr>`+
     d.edges.map(e=>`<tr><td>${e.matchup}</td><td><b>${e.bet}</b></td>
     <td class="num">${e.price>0?'+':''}${e.price}</td><td class="num dim">${e.fair}</td>
     <td class="num"><b style="color:var(--acc2)">+${e.edge_pct}%</b></td>
     <td class="num">${(e.stake_frac*100).toFixed(1)}%</td>
-    <td class="hide-m dim">${e.book} <span class="pill">${e.books_n} books</span></td></tr>`).join('')+`</table>`;
+    <td class="hide-m dim">${e.book} <span class="pill">${e.bettable_n!=null?e.bettable_n+'/'+e.books_n:e.books_n} books</span></td>
+    <td class="hide-m num dim">${e.any_price!=null?(e.any_price>0?'+':'')+e.any_price+' '+e.any_book:'—'}</td></tr>`).join('')+`</table>`;
   } else { $('edgesBody').innerHTML=`<div class="empty">${d.edge_note||'no edges'}</div>`; }
   // ratings
   if(d.ratings&&d.ratings.length){
@@ -155,14 +181,26 @@ function render(d){
       market accuracy <b>${m.acc}%</b> on ${m.n} · disagreements so far <b>${m.disagree_n}</b>`+
       (m.disagree_model_right!=null?` · model right <b style="color:${m.disagree_model_right>=50?'var(--acc2)':'var(--red)'}">${m.disagree_model_right}%</b>`:'')+`</div>`;
     }
+    // T-30 vs game-day. The ledger used to freeze p_home at first sight, which graded
+    // a month-stale forecast; it now refreshes until the game is graded and keeps the
+    // first sighting beside it, so the two are directly comparable here.
+    const fv=c.first_vs_final;
+    if(fv){
+      h+=`<div class="sub" style="margin-top:10px">first published vs final published number
+      (${fv.n_moved} of ${fv.n} moved): first <b>${fv.first_acc}%</b> / Brier <b>${fv.first_brier}</b>
+      → final <b>${fv.final_acc}%</b> / Brier <b>${fv.final_brier}</b></div>`;
+    }
     $('calBody').innerHTML=h;
   }
   // method backtest strip
   const b=d.backtest;
   if(b){$('btBody').innerHTML=`<div class="sub" style="margin-top:6px">verified this build: model <b>${b.acc}%</b> ·
   Brier <b>${b.brier}</b> · market <b>${b.market_acc}%</b> · disagreements <b>${b.n_disagree}</b> @ model
-  <b>${b.model_right_in_disagree}%</b> right — the 44.3 verdict, recomputed from raw data every run.</div>`;}
+  <b>${b.model_right_in_disagree}%</b> right on ${b.n} games — recomputed from raw data every run, so
+  this line moves when the model does. Anything under 50% here means fading the market loses.</div>`;}
 }
-fetch('data/slate.json').then(r=>r.json()).then(render)
+// cache:'no-store' — GitHub Pages serves slate.json with a long max-age, so without
+// this the page can render yesterday's build for hours and look perfectly current.
+fetch('data/slate.json',{cache:'no-store'}).then(r=>r.json()).then(render)
  .catch(()=>{$('meta').textContent='could not load slate.json — run nfl_publish.py (or wait for the daily Action)';});
 </script></body></html>
