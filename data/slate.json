@@ -1,5 +1,5 @@
 {
- "generated": "2026-08-02T16:02:16+00:00",
+ "generated": "2026-08-03T17:09:14+00:00",
  "slate_date": "2026-09-09",
  "slate_end": "2026-09-14",
  "games": [
@@ -29,7 +29,7 @@
    "p_home": 56.3,
    "neutral": true,
    "spread_line": 3.5,
-   "mkt_p": 62.9
+   "mkt_p": 62.8
   },
   {
    "season": 2026,
@@ -140,8 +140,8 @@
    "elo_home": 1357.7,
    "p_home": 54.5,
    "neutral": false,
-   "spread_line": 3.0,
-   "mkt_p": 57.9
+   "spread_line": 2.5,
+   "mkt_p": 57.2
   },
   {
    "season": 2026,
@@ -211,7 +211,7 @@
    "p_home": 50.7,
    "neutral": false,
    "spread_line": -2.5,
-   "mkt_p": 42.9
+   "mkt_p": 42.8
   },
   {
    "season": 2026,
@@ -365,8 +365,8 @@
    "price": 176,
    "book": "fanduel",
    "fair": "+169",
-   "edge_pct": 2.4,
-   "stake_frac": 0.0035,
+   "edge_pct": 2.7,
+   "stake_frac": 0.0038,
    "books_n": 9
   },
   {
@@ -377,16 +377,6 @@
    "fair": "+175",
    "edge_pct": 1.7,
    "stake_frac": 0.0023,
-   "books_n": 9
-  },
-  {
-   "matchup": "NYJ @ TEN",
-   "bet": "TEN ML",
-   "price": -134,
-   "book": "fanduel",
-   "fair": "-137",
-   "edge_pct": 1.1,
-   "stake_frac": 0.0036,
    "books_n": 9
   }
  ],
