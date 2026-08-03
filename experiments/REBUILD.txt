@@ -1,0 +1,1 @@
+rebuild requested 2026-08-03T22:47Z — key/pin just landed, run now instead of waiting for the cron

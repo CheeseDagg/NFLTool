@@ -3,6 +3,9 @@ on:
   schedule:
     - cron: "0 15 * * *"   # 10am CT daily; idles cheaply all offseason
   workflow_dispatch: {}
+  push:
+    paths: ['experiments/REBUILD.txt']   # touch to rebuild on demand, same pattern as UFC-ODDS
+                                         # (workflow_dispatch needs the GitHub UI; this needs only a push)
 permissions:
   contents: write
 concurrency:
