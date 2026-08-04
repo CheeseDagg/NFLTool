@@ -1,5 +1,5 @@
 {
- "generated": "2026-08-03T22:48:02+00:00",
+ "generated": "2026-08-04T16:51:09+00:00",
  "slate_date": "2026-09-09",
  "slate_end": "2026-09-14",
  "games": [
@@ -15,7 +15,7 @@
    "p_home": 65.0,
    "neutral": false,
    "spread_line": 3.5,
-   "mkt_p": 63.7
+   "mkt_p": 63.9
   },
   {
    "season": 2026,
@@ -375,7 +375,7 @@
  ],
  "edge_note": "",
  "odds_status": {
-  "checked": "2026-08-03T22:48:01+00:00",
+  "checked": "2026-08-04T16:51:08+00:00",
   "ok": true,
   "error": null,
   "rows": 411,
