@@ -1,5 +1,5 @@
 {
- "generated": "2026-08-08T15:29:17+00:00",
+ "generated": "2026-08-09T15:31:49+00:00",
  "slate_date": "2026-09-09",
  "slate_end": "2026-09-14",
  "games": [
@@ -43,7 +43,7 @@
    "p_home": 40.6,
    "neutral": false,
    "spread_line": -2.5,
-   "mkt_p": 42.8
+   "mkt_p": 42.9
   },
   {
    "season": 2026,
@@ -99,7 +99,7 @@
    "p_home": 44.3,
    "neutral": false,
    "spread_line": -3.5,
-   "mkt_p": 37.6
+   "mkt_p": 37.7
   },
   {
    "season": 2026,
@@ -197,7 +197,7 @@
    "p_home": 66.3,
    "neutral": false,
    "spread_line": 4.5,
-   "mkt_p": 65.4
+   "mkt_p": 65.9
   },
   {
    "season": 2026,
@@ -358,10 +358,24 @@
    "elo": 1351.6
   }
  ],
- "edges": [],
- "edge_note": "no side clears the 1% line-shop bar today",
+ "edges": [
+  {
+   "matchup": "WAS @ PHI",
+   "bet": "WAS ML",
+   "price": 198,
+   "book": "fanduel",
+   "fair": "+193",
+   "edge_pct": 1.7,
+   "stake_frac": 0.0021,
+   "books_n": 10,
+   "bettable_n": 1,
+   "any_price": null,
+   "any_book": null
+  }
+ ],
+ "edge_note": "",
  "odds_status": {
-  "checked": "2026-08-08T15:29:15+00:00",
+  "checked": "2026-08-09T15:31:48+00:00",
   "ok": true,
   "error": null,
   "rows": 665,
