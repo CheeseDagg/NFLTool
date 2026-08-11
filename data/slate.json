@@ -1,7 +1,7 @@
 {
- "generated": "2026-08-10T15:59:52+00:00",
+ "generated": "2026-08-11T16:00:45+00:00",
  "slate_date": "2026-09-09",
- "slate_end": "2026-09-09",
+ "slate_end": "2026-09-10",
  "games": [
   {
    "season": 2026,
@@ -14,6 +14,20 @@
    "elo_home": 1669.5,
    "p_home": 65.0,
    "neutral": false,
+   "spread_line": 3.5,
+   "mkt_p": 63.7
+  },
+  {
+   "season": 2026,
+   "week": 1,
+   "date": "Thu Sep 10",
+   "date_iso": "2026-09-10",
+   "away": "SF",
+   "home": "LA",
+   "elo_away": 1555.2,
+   "elo_home": 1604.4,
+   "p_home": 56.3,
+   "neutral": true,
    "spread_line": 3.5,
    "mkt_p": 63.7
   }
@@ -150,13 +164,13 @@
  ],
  "edges": [
   {
-   "matchup": "WAS @ PHI",
-   "bet": "WAS ML",
-   "price": 198,
+   "matchup": "BAL @ IND",
+   "bet": "IND ML",
+   "price": 168,
    "book": "fanduel",
-   "fair": "+193",
-   "edge_pct": 1.7,
-   "stake_frac": 0.0021,
+   "fair": "+165",
+   "edge_pct": 1.1,
+   "stake_frac": 0.0016,
    "books_n": 10,
    "bettable_n": 1,
    "any_price": null,
@@ -165,7 +179,7 @@
  ],
  "edge_note": "",
  "odds_status": {
-  "checked": "2026-08-10T15:59:50+00:00",
+  "checked": "2026-08-11T16:00:44+00:00",
   "ok": true,
   "error": null,
   "rows": 665,
