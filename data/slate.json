@@ -1,5 +1,5 @@
 {
- "generated": "2026-08-11T16:00:45+00:00",
+ "generated": "2026-08-12T15:58:43+00:00",
  "slate_date": "2026-09-09",
  "slate_end": "2026-09-10",
  "games": [
@@ -162,27 +162,13 @@
    "elo": 1351.6
   }
  ],
- "edges": [
-  {
-   "matchup": "BAL @ IND",
-   "bet": "IND ML",
-   "price": 168,
-   "book": "fanduel",
-   "fair": "+165",
-   "edge_pct": 1.1,
-   "stake_frac": 0.0016,
-   "books_n": 10,
-   "bettable_n": 1,
-   "any_price": null,
-   "any_book": null
-  }
- ],
- "edge_note": "",
+ "edges": [],
+ "edge_note": "no side clears the 1% line-shop bar today",
  "odds_status": {
-  "checked": "2026-08-11T16:00:44+00:00",
+  "checked": "2026-08-12T15:58:42+00:00",
   "ok": true,
   "error": null,
-  "rows": 665,
+  "rows": 649,
   "games": 272,
   "kept_previous_rows": null,
   "note": ""
