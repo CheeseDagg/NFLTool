@@ -1,5 +1,5 @@
 {
- "generated": "2026-08-12T15:58:43+00:00",
+ "generated": "2026-08-13T15:58:46+00:00",
  "slate_date": "2026-09-09",
  "slate_end": "2026-09-10",
  "games": [
@@ -165,10 +165,10 @@
  "edges": [],
  "edge_note": "no side clears the 1% line-shop bar today",
  "odds_status": {
-  "checked": "2026-08-12T15:58:42+00:00",
+  "checked": "2026-08-13T15:58:45+00:00",
   "ok": true,
   "error": null,
-  "rows": 649,
+  "rows": 667,
   "games": 272,
   "kept_previous_rows": null,
   "note": ""
