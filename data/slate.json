@@ -1,7 +1,7 @@
 {
- "generated": "2026-08-14T15:51:56+00:00",
+ "generated": "2026-08-15T15:20:41+00:00",
  "slate_date": "2026-09-09",
- "slate_end": "2026-09-13",
+ "slate_end": "2026-09-14",
  "games": [
   {
    "season": 2026,
@@ -43,7 +43,7 @@
    "p_home": 40.6,
    "neutral": false,
    "spread_line": -2.5,
-   "mkt_p": 42.1
+   "mkt_p": 42.7
   },
   {
    "season": 2026,
@@ -71,7 +71,7 @@
    "p_home": 69.9,
    "neutral": false,
    "spread_line": 7.0,
-   "mkt_p": 73.8
+   "mkt_p": 74.0
   },
   {
    "season": 2026,
@@ -85,7 +85,7 @@
    "p_home": 54.8,
    "neutral": false,
    "spread_line": -1.5,
-   "mkt_p": 50.0
+   "mkt_p": 50.4
   },
   {
    "season": 2026,
@@ -113,7 +113,7 @@
    "p_home": 74.0,
    "neutral": false,
    "spread_line": 7.5,
-   "mkt_p": 76.3
+   "mkt_p": 75.7
   },
   {
    "season": 2026,
@@ -169,7 +169,7 @@
    "p_home": 40.2,
    "neutral": false,
    "spread_line": 3.5,
-   "mkt_p": 63.6
+   "mkt_p": 63.5
   },
   {
    "season": 2026,
@@ -183,7 +183,7 @@
    "p_home": 57.8,
    "neutral": false,
    "spread_line": 1.5,
-   "mkt_p": 51.5
+   "mkt_p": 51.6
   },
   {
    "season": 2026,
@@ -212,6 +212,20 @@
    "neutral": false,
    "spread_line": -2.5,
    "mkt_p": 42.9
+  },
+  {
+   "season": 2026,
+   "week": 1,
+   "date": "Mon Sep 14",
+   "date_iso": "2026-09-14",
+   "away": "DEN",
+   "home": "KC",
+   "elo_away": 1608.3,
+   "elo_home": 1487.2,
+   "p_home": 38.9,
+   "neutral": false,
+   "spread_line": 3.0,
+   "mkt_p": 57.2
   }
  ],
  "ratings": [
@@ -344,10 +358,37 @@
    "elo": 1351.6
   }
  ],
- "edges": [],
- "edge_note": "no side clears the 1% line-shop bar today",
+ "edges": [
+  {
+   "matchup": "CLE @ JAX",
+   "bet": "CLE ML",
+   "price": 320,
+   "book": "fanduel",
+   "fair": "+312",
+   "edge_pct": 1.9,
+   "stake_frac": 0.0015,
+   "books_n": 10,
+   "bettable_n": 1,
+   "any_price": null,
+   "any_book": null
+  },
+  {
+   "matchup": "WAS @ PHI",
+   "bet": "WAS ML",
+   "price": 198,
+   "book": "fanduel",
+   "fair": "+193",
+   "edge_pct": 1.7,
+   "stake_frac": 0.0021,
+   "books_n": 10,
+   "bettable_n": 1,
+   "any_price": null,
+   "any_book": null
+  }
+ ],
+ "edge_note": "",
  "odds_status": {
-  "checked": "2026-08-14T15:51:54+00:00",
+  "checked": "2026-08-15T15:20:39+00:00",
   "ok": true,
   "error": null,
   "rows": 667,
