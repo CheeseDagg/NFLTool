@@ -1,5 +1,5 @@
 {
- "generated": "2026-08-15T15:20:41+00:00",
+ "generated": "2026-08-16T15:21:26+00:00",
  "slate_date": "2026-09-09",
  "slate_end": "2026-09-14",
  "games": [
@@ -43,7 +43,7 @@
    "p_home": 40.6,
    "neutral": false,
    "spread_line": -2.5,
-   "mkt_p": 42.7
+   "mkt_p": 42.6
   },
   {
    "season": 2026,
@@ -71,7 +71,7 @@
    "p_home": 69.9,
    "neutral": false,
    "spread_line": 7.0,
-   "mkt_p": 74.0
+   "mkt_p": 73.9
   },
   {
    "season": 2026,
@@ -85,7 +85,7 @@
    "p_home": 54.8,
    "neutral": false,
    "spread_line": -1.5,
-   "mkt_p": 50.4
+   "mkt_p": 50.2
   },
   {
    "season": 2026,
@@ -99,7 +99,7 @@
    "p_home": 44.3,
    "neutral": false,
    "spread_line": -3.5,
-   "mkt_p": 37.8
+   "mkt_p": 37.9
   },
   {
    "season": 2026,
@@ -127,7 +127,7 @@
    "p_home": 60.5,
    "neutral": false,
    "spread_line": 3.0,
-   "mkt_p": 59.6
+   "mkt_p": 59.5
   },
   {
    "season": 2026,
@@ -141,7 +141,7 @@
    "p_home": 54.5,
    "neutral": false,
    "spread_line": 3.0,
-   "mkt_p": 57.1
+   "mkt_p": 57.2
   },
   {
    "season": 2026,
@@ -155,7 +155,7 @@
    "p_home": 72.4,
    "neutral": false,
    "spread_line": 10.5,
-   "mkt_p": 82.0
+   "mkt_p": 81.8
   },
   {
    "season": 2026,
@@ -183,7 +183,7 @@
    "p_home": 57.8,
    "neutral": false,
    "spread_line": 1.5,
-   "mkt_p": 51.6
+   "mkt_p": 51.7
   },
   {
    "season": 2026,
@@ -365,9 +365,9 @@
    "price": 320,
    "book": "fanduel",
    "fair": "+312",
-   "edge_pct": 1.9,
+   "edge_pct": 2.0,
    "stake_frac": 0.0015,
-   "books_n": 10,
+   "books_n": 11,
    "bettable_n": 1,
    "any_price": null,
    "any_book": null
@@ -380,18 +380,18 @@
    "fair": "+193",
    "edge_pct": 1.7,
    "stake_frac": 0.0021,
-   "books_n": 10,
+   "books_n": 11,
    "bettable_n": 1,
-   "any_price": null,
-   "any_book": null
+   "any_price": 200,
+   "any_book": "fanatics"
   }
  ],
  "edge_note": "",
  "odds_status": {
-  "checked": "2026-08-15T15:20:39+00:00",
+  "checked": "2026-08-16T15:21:25+00:00",
   "ok": true,
   "error": null,
-  "rows": 667,
+  "rows": 685,
   "games": 272,
   "kept_previous_rows": null,
   "note": ""
