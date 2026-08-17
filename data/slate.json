@@ -1,5 +1,5 @@
 {
- "generated": "2026-08-16T15:21:26+00:00",
+ "generated": "2026-08-17T15:24:41+00:00",
  "slate_date": "2026-09-09",
  "slate_end": "2026-09-14",
  "games": [
@@ -43,7 +43,7 @@
    "p_home": 40.6,
    "neutral": false,
    "spread_line": -2.5,
-   "mkt_p": 42.6
+   "mkt_p": 42.8
   },
   {
    "season": 2026,
@@ -71,7 +71,7 @@
    "p_home": 69.9,
    "neutral": false,
    "spread_line": 7.0,
-   "mkt_p": 73.9
+   "mkt_p": 73.8
   },
   {
    "season": 2026,
@@ -183,7 +183,7 @@
    "p_home": 57.8,
    "neutral": false,
    "spread_line": 1.5,
-   "mkt_p": 51.7
+   "mkt_p": 51.9
   },
   {
    "season": 2026,
@@ -360,6 +360,19 @@
  ],
  "edges": [
   {
+   "matchup": "IND @ WAS",
+   "bet": "WAS ML",
+   "price": 106,
+   "book": "fanduel",
+   "fair": "+101",
+   "edge_pct": 2.3,
+   "stake_frac": 0.0055,
+   "books_n": 3,
+   "bettable_n": 1,
+   "any_price": null,
+   "any_book": null
+  },
+  {
    "matchup": "CLE @ JAX",
    "bet": "CLE ML",
    "price": 320,
@@ -388,7 +401,7 @@
  ],
  "edge_note": "",
  "odds_status": {
-  "checked": "2026-08-16T15:21:25+00:00",
+  "checked": "2026-08-17T15:24:39+00:00",
   "ok": true,
   "error": null,
   "rows": 685,
