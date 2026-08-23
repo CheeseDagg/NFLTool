@@ -1,5 +1,5 @@
 {
- "generated": "2026-08-22T15:20:36+00:00",
+ "generated": "2026-08-23T15:21:56+00:00",
  "slate_date": "2026-09-09",
  "slate_end": "2026-09-21",
  "games": [
@@ -15,7 +15,7 @@
    "p_home": 65.0,
    "neutral": false,
    "spread_line": 3.5,
-   "mkt_p": 63.5
+   "mkt_p": 63.4
   },
   {
    "season": 2026,
@@ -57,7 +57,7 @@
    "p_home": 55.1,
    "neutral": false,
    "spread_line": 3.5,
-   "mkt_p": 63.7
+   "mkt_p": 64.9
   },
   {
    "season": 2026,
@@ -99,7 +99,7 @@
    "p_home": 44.3,
    "neutral": false,
    "spread_line": -3.5,
-   "mkt_p": 37.7
+   "mkt_p": 37.8
   },
   {
    "season": 2026,
@@ -113,7 +113,7 @@
    "p_home": 74.0,
    "neutral": false,
    "spread_line": 7.5,
-   "mkt_p": 75.9
+   "mkt_p": 76.3
   },
   {
    "season": 2026,
@@ -155,7 +155,7 @@
    "p_home": 72.4,
    "neutral": false,
    "spread_line": 10.5,
-   "mkt_p": 81.8
+   "mkt_p": 81.9
   },
   {
    "season": 2026,
@@ -239,7 +239,7 @@
    "p_home": 62.2,
    "neutral": false,
    "spread_line": 3.0,
-   "mkt_p": 59.1
+   "mkt_p": 59.2
   },
   {
    "season": 2026,
@@ -351,7 +351,7 @@
    "p_home": 28.0,
    "neutral": false,
    "spread_line": -4.5,
-   "mkt_p": 34.2
+   "mkt_p": 34.9
   },
   {
    "season": 2026,
@@ -407,7 +407,7 @@
    "p_home": 53.5,
    "neutral": false,
    "spread_line": 4.5,
-   "mkt_p": 63.4
+   "mkt_p": 63.8
   },
   {
    "season": 2026,
@@ -421,7 +421,7 @@
    "p_home": 69.9,
    "neutral": false,
    "spread_line": 10.5,
-   "mkt_p": 82.0
+   "mkt_p": 82.4
   },
   {
    "season": 2026,
@@ -584,19 +584,6 @@
  ],
  "edges": [
   {
-   "matchup": "CLE @ JAX",
-   "bet": "CLE ML",
-   "price": 330,
-   "book": "fanduel",
-   "fair": "+315",
-   "edge_pct": 3.6,
-   "stake_frac": 0.0027,
-   "books_n": 10,
-   "bettable_n": 1,
-   "any_price": null,
-   "any_book": null
-  },
-  {
    "matchup": "IND @ WAS",
    "bet": "WAS ML",
    "price": 106,
@@ -605,6 +592,19 @@
    "edge_pct": 2.3,
    "stake_frac": 0.0055,
    "books_n": 3,
+   "bettable_n": 1,
+   "any_price": null,
+   "any_book": null
+  },
+  {
+   "matchup": "CLE @ JAX",
+   "bet": "CLE ML",
+   "price": 330,
+   "book": "fanduel",
+   "fair": "+321",
+   "edge_pct": 2.1,
+   "stake_frac": 0.0016,
+   "books_n": 10,
    "bettable_n": 1,
    "any_price": null,
    "any_book": null
@@ -651,7 +651,7 @@
  ],
  "edge_note": "",
  "odds_status": {
-  "checked": "2026-08-22T15:20:34+00:00",
+  "checked": "2026-08-23T15:21:54+00:00",
   "ok": true,
   "error": null,
   "rows": 667,
