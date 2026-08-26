@@ -1,5 +1,5 @@
 {
- "generated": "2026-08-25T15:41:37+00:00",
+ "generated": "2026-08-26T16:18:09+00:00",
  "slate_date": "2026-09-09",
  "slate_end": "2026-09-24",
  "games": [
@@ -57,7 +57,7 @@
    "p_home": 55.1,
    "neutral": false,
    "spread_line": 3.5,
-   "mkt_p": 64.9
+   "mkt_p": 64.3
   },
   {
    "season": 2026,
@@ -99,7 +99,7 @@
    "p_home": 44.3,
    "neutral": false,
    "spread_line": -3.5,
-   "mkt_p": 37.8
+   "mkt_p": 37.9
   },
   {
    "season": 2026,
@@ -113,7 +113,7 @@
    "p_home": 74.0,
    "neutral": false,
    "spread_line": 7.5,
-   "mkt_p": 76.1
+   "mkt_p": 76.0
   },
   {
    "season": 2026,
@@ -127,7 +127,7 @@
    "p_home": 60.5,
    "neutral": false,
    "spread_line": 3.0,
-   "mkt_p": 59.6
+   "mkt_p": 59.8
   },
   {
    "season": 2026,
@@ -155,7 +155,7 @@
    "p_home": 72.4,
    "neutral": false,
    "spread_line": 10.5,
-   "mkt_p": 81.4
+   "mkt_p": 81.1
   },
   {
    "season": 2026,
@@ -169,7 +169,7 @@
    "p_home": 40.2,
    "neutral": false,
    "spread_line": 3.5,
-   "mkt_p": 63.5
+   "mkt_p": 63.4
   },
   {
    "season": 2026,
@@ -197,7 +197,7 @@
    "p_home": 66.3,
    "neutral": false,
    "spread_line": 4.5,
-   "mkt_p": 66.0
+   "mkt_p": 65.9
   },
   {
    "season": 2026,
@@ -211,7 +211,7 @@
    "p_home": 50.7,
    "neutral": false,
    "spread_line": -2.5,
-   "mkt_p": 42.0
+   "mkt_p": 41.7
   },
   {
    "season": 2026,
@@ -267,7 +267,7 @@
    "p_home": 68.6,
    "neutral": false,
    "spread_line": 7.5,
-   "mkt_p": 75.0
+   "mkt_p": 74.9
   },
   {
    "season": 2026,
@@ -337,7 +337,7 @@
    "p_home": 62.5,
    "neutral": false,
    "spread_line": 5.5,
-   "mkt_p": 70.4
+   "mkt_p": 70.1
   },
   {
    "season": 2026,
@@ -421,7 +421,7 @@
    "p_home": 69.9,
    "neutral": false,
    "spread_line": 10.5,
-   "mkt_p": 82.0
+   "mkt_p": 82.3
   },
   {
    "season": 2026,
@@ -449,7 +449,7 @@
    "p_home": 78.6,
    "neutral": false,
    "spread_line": 8.5,
-   "mkt_p": 76.9
+   "mkt_p": 76.8
   },
   {
    "season": 2026,
@@ -598,26 +598,26 @@
  ],
  "edges": [
   {
-   "matchup": "CLE @ JAX",
-   "bet": "CLE ML",
-   "price": 350,
+   "matchup": "ARI @ LAC",
+   "bet": "ARI ML",
+   "price": 450,
    "book": "fanduel",
-   "fair": "+319",
-   "edge_pct": 7.4,
-   "stake_frac": 0.0053,
+   "fair": "+428",
+   "edge_pct": 4.2,
+   "stake_frac": 0.0023,
    "books_n": 10,
    "bettable_n": 1,
    "any_price": null,
    "any_book": null
   },
   {
-   "matchup": "ARI @ LAC",
-   "bet": "ARI ML",
-   "price": 450,
+   "matchup": "CLE @ JAX",
+   "bet": "CLE ML",
+   "price": 330,
    "book": "fanduel",
-   "fair": "+438",
-   "edge_pct": 2.3,
-   "stake_frac": 0.0013,
+   "fair": "+318",
+   "edge_pct": 3.0,
+   "stake_frac": 0.0023,
    "books_n": 10,
    "bettable_n": 1,
    "any_price": null,
@@ -652,10 +652,10 @@
  ],
  "edge_note": "",
  "odds_status": {
-  "checked": "2026-08-25T15:41:36+00:00",
+  "checked": "2026-08-26T16:18:03+00:00",
   "ok": true,
   "error": null,
-  "rows": 667,
+  "rows": 669,
   "games": 272,
   "kept_previous_rows": null,
   "note": ""
