@@ -1,5 +1,5 @@
 {
- "generated": "2026-08-30T18:26:45+00:00",
+ "generated": "2026-08-31T20:40:40+00:00",
  "slate_date": "2026-09-09",
  "slate_end": "2026-09-28",
  "games": [
@@ -15,7 +15,7 @@
    "p_home": 65.0,
    "neutral": false,
    "spread_line": 3.5,
-   "mkt_p": 62.3
+   "mkt_p": 62.6
   },
   {
    "season": 2026,
@@ -29,7 +29,7 @@
    "p_home": 56.3,
    "neutral": true,
    "spread_line": 3.5,
-   "mkt_p": 63.4
+   "mkt_p": 63.8
   },
   {
    "season": 2026,
@@ -43,7 +43,7 @@
    "p_home": 50.7,
    "neutral": false,
    "spread_line": -2.5,
-   "mkt_p": 41.7
+   "mkt_p": 41.2
   },
   {
    "season": 2026,
@@ -85,7 +85,7 @@
    "p_home": 72.4,
    "neutral": false,
    "spread_line": 10.5,
-   "mkt_p": 80.9
+   "mkt_p": 81.2
   },
   {
    "season": 2026,
@@ -98,8 +98,8 @@
    "elo_home": 1357.7,
    "p_home": 54.5,
    "neutral": false,
-   "spread_line": 3.0,
-   "mkt_p": 57.1
+   "spread_line": 1.5,
+   "mkt_p": 54.3
   },
   {
    "season": 2026,
@@ -113,7 +113,7 @@
    "p_home": 60.5,
    "neutral": false,
    "spread_line": 3.0,
-   "mkt_p": 59.9
+   "mkt_p": 59.8
   },
   {
    "season": 2026,
@@ -141,7 +141,7 @@
    "p_home": 44.3,
    "neutral": false,
    "spread_line": -3.5,
-   "mkt_p": 37.7
+   "mkt_p": 38.1
   },
   {
    "season": 2026,
@@ -169,7 +169,7 @@
    "p_home": 69.9,
    "neutral": false,
    "spread_line": 7.0,
-   "mkt_p": 73.9
+   "mkt_p": 73.3
   },
   {
    "season": 2026,
@@ -183,7 +183,7 @@
    "p_home": 55.1,
    "neutral": false,
    "spread_line": 3.5,
-   "mkt_p": 64.7
+   "mkt_p": 64.3
   },
   {
    "season": 2026,
@@ -197,7 +197,7 @@
    "p_home": 40.6,
    "neutral": false,
    "spread_line": -2.5,
-   "mkt_p": 42.0
+   "mkt_p": 42.1
   },
   {
    "season": 2026,
@@ -211,7 +211,7 @@
    "p_home": 74.0,
    "neutral": false,
    "spread_line": 7.5,
-   "mkt_p": 76.5
+   "mkt_p": 76.7
   },
   {
    "season": 2026,
@@ -225,7 +225,7 @@
    "p_home": 38.9,
    "neutral": false,
    "spread_line": 3.0,
-   "mkt_p": 56.7
+   "mkt_p": 56.6
   },
   {
    "season": 2026,
@@ -295,7 +295,7 @@
    "p_home": 53.5,
    "neutral": false,
    "spread_line": 4.5,
-   "mkt_p": 63.4
+   "mkt_p": 63.8
   },
   {
    "season": 2026,
@@ -309,7 +309,7 @@
    "p_home": 20.5,
    "neutral": false,
    "spread_line": -10.0,
-   "mkt_p": 19.3
+   "mkt_p": 19.5
   },
   {
    "season": 2026,
@@ -337,7 +337,7 @@
    "p_home": 28.0,
    "neutral": false,
    "spread_line": -4.5,
-   "mkt_p": 34.9
+   "mkt_p": 34.2
   },
   {
    "season": 2026,
@@ -351,7 +351,7 @@
    "p_home": 62.5,
    "neutral": false,
    "spread_line": 5.5,
-   "mkt_p": 70.1
+   "mkt_p": 70.4
   },
   {
    "season": 2026,
@@ -407,7 +407,7 @@
    "p_home": 51.7,
    "neutral": false,
    "spread_line": 3.5,
-   "mkt_p": 63.4
+   "mkt_p": 63.8
   },
   {
    "season": 2026,
@@ -449,7 +449,7 @@
    "p_home": 78.6,
    "neutral": false,
    "spread_line": 8.5,
-   "mkt_p": 77.2
+   "mkt_p": 76.9
   },
   {
    "season": 2026,
@@ -463,7 +463,7 @@
    "p_home": 62.4,
    "neutral": false,
    "spread_line": 7.5,
-   "mkt_p": 74.6
+   "mkt_p": 74.9
   },
   {
    "season": 2026,
@@ -519,7 +519,7 @@
    "p_home": 73.8,
    "neutral": false,
    "spread_line": 11.5,
-   "mkt_p": 82.4
+   "mkt_p": 82.1
   },
   {
    "season": 2026,
@@ -575,7 +575,7 @@
    "p_home": 50.2,
    "neutral": false,
    "spread_line": -7.5,
-   "mkt_p": 23.0
+   "mkt_p": 23.3
   },
   {
    "season": 2026,
@@ -617,7 +617,7 @@
    "p_home": 79.5,
    "neutral": false,
    "spread_line": 9.5,
-   "mkt_p": 78.8
+   "mkt_p": 78.6
   },
   {
    "season": 2026,
@@ -808,27 +808,27 @@
  ],
  "edges": [
   {
-   "matchup": "ARI @ LAC",
-   "bet": "ARI ML",
-   "price": 480,
+   "matchup": "NE @ DET",
+   "bet": "DET ML",
+   "price": 100,
    "book": "fanduel",
-   "fair": "+424",
-   "edge_pct": 10.6,
-   "stake_frac": 0.0055,
-   "books_n": 11,
+   "fair": "-114",
+   "edge_pct": 6.5,
+   "stake_frac": 0.0162,
+   "books_n": 3,
    "bettable_n": 1,
    "any_price": null,
    "any_book": null
   },
   {
-   "matchup": "NO @ DET",
-   "bet": "NO ML",
-   "price": 290,
+   "matchup": "ARI @ LAC",
+   "bet": "ARI ML",
+   "price": 460,
    "book": "fanduel",
-   "fair": "+283",
-   "edge_pct": 1.8,
-   "stake_frac": 0.0016,
-   "books_n": 11,
+   "fair": "+432",
+   "edge_pct": 5.3,
+   "stake_frac": 0.0029,
+   "books_n": 10,
    "bettable_n": 1,
    "any_price": null,
    "any_book": null
@@ -849,10 +849,10 @@
  ],
  "edge_note": "",
  "odds_status": {
-  "checked": "2026-08-30T18:26:44+00:00",
+  "checked": "2026-08-31T20:40:39+00:00",
   "ok": true,
   "error": null,
-  "rows": 686,
+  "rows": 671,
   "games": 272,
   "kept_previous_rows": null,
   "note": ""
