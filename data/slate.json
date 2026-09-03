@@ -1,5 +1,5 @@
 {
- "generated": "2026-09-02T18:26:55+00:00",
+ "generated": "2026-09-03T18:22:00+00:00",
  "slate_date": "2026-09-09",
  "slate_end": "2026-10-01",
  "games": [
@@ -29,7 +29,7 @@
    "p_home": 56.3,
    "neutral": true,
    "spread_line": 3.5,
-   "mkt_p": 63.9
+   "mkt_p": 64.1
   },
   {
    "season": 2026,
@@ -43,7 +43,7 @@
    "p_home": 50.7,
    "neutral": false,
    "spread_line": -2.5,
-   "mkt_p": 41.4
+   "mkt_p": 41.0
   },
   {
    "season": 2026,
@@ -57,7 +57,7 @@
    "p_home": 66.3,
    "neutral": false,
    "spread_line": 5.5,
-   "mkt_p": 67.3
+   "mkt_p": 67.0
   },
   {
    "season": 2026,
@@ -112,8 +112,8 @@
    "elo_home": 1510.7,
    "p_home": 60.5,
    "neutral": false,
-   "spread_line": 3.0,
-   "mkt_p": 60.4
+   "spread_line": 3.5,
+   "mkt_p": 61.6
   },
   {
    "season": 2026,
@@ -183,7 +183,7 @@
    "p_home": 55.1,
    "neutral": false,
    "spread_line": 3.5,
-   "mkt_p": 64.5
+   "mkt_p": 64.6
   },
   {
    "season": 2026,
@@ -322,8 +322,8 @@
    "elo_home": 1608.3,
    "p_home": 59.8,
    "neutral": false,
-   "spread_line": 2.5,
-   "mkt_p": 58.0
+   "spread_line": 3.0,
+   "mkt_p": 59.0
   },
   {
    "season": 2026,
@@ -351,7 +351,7 @@
    "p_home": 32.1,
    "neutral": false,
    "spread_line": -5.5,
-   "mkt_p": 31.5
+   "mkt_p": 31.7
   },
   {
    "season": 2026,
@@ -393,7 +393,7 @@
    "p_home": 51.7,
    "neutral": false,
    "spread_line": 3.5,
-   "mkt_p": 63.4
+   "mkt_p": 63.1
   },
   {
    "season": 2026,
@@ -407,7 +407,7 @@
    "p_home": 68.6,
    "neutral": false,
    "spread_line": 7.5,
-   "mkt_p": 75.2
+   "mkt_p": 74.9
   },
   {
    "season": 2026,
@@ -434,8 +434,8 @@
    "elo_home": 1475.9,
    "p_home": 62.5,
    "neutral": false,
-   "spread_line": 5.5,
-   "mkt_p": 70.1
+   "spread_line": 6.5,
+   "mkt_p": 71.8
   },
   {
    "season": 2026,
@@ -617,7 +617,7 @@
    "p_home": 53.5,
    "neutral": false,
    "spread_line": -1.5,
-   "mkt_p": 44.7
+   "mkt_p": 45.0
   },
   {
    "season": 2026,
@@ -837,7 +837,7 @@
  ],
  "edge_note": "",
  "odds_status": {
-  "checked": "2026-09-02T18:26:54+00:00",
+  "checked": "2026-09-03T18:22:00+00:00",
   "ok": true,
   "error": null,
   "rows": 687,
