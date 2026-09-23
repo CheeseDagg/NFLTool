@@ -1,5 +1,5 @@
 {
- "generated": "2026-09-22T18:32:30+00:00",
+ "generated": "2026-09-23T18:52:44+00:00",
  "slate_date": "2026-09-24",
  "slate_end": "2026-10-22",
  "games": [
@@ -14,8 +14,8 @@
    "elo_home": 1511.6,
    "p_home": 68.5,
    "neutral": false,
-   "spread_line": 6.0,
-   "mkt_p": 71.0
+   "spread_line": 4.5,
+   "mkt_p": 69.4
   },
   {
    "season": 2026,
@@ -29,7 +29,7 @@
    "p_home": 55.8,
    "neutral": false,
    "spread_line": -2.5,
-   "mkt_p": 43.8
+   "mkt_p": 43.7
   },
   {
    "season": 2026,
@@ -43,7 +43,7 @@
    "p_home": 61.0,
    "neutral": false,
    "spread_line": 3.0,
-   "mkt_p": 61.6
+   "mkt_p": 61.4
   },
   {
    "season": 2026,
@@ -56,8 +56,8 @@
    "elo_home": 1459.3,
    "p_home": 39.6,
    "neutral": true,
-   "spread_line": -3.0,
-   "mkt_p": 40.6
+   "spread_line": -3.5,
+   "mkt_p": 38.4
   },
   {
    "season": 2026,
@@ -71,7 +71,7 @@
    "p_home": 75.7,
    "neutral": false,
    "spread_line": 8.5,
-   "mkt_p": 77.4
+   "mkt_p": 77.5
   },
   {
    "season": 2026,
@@ -85,7 +85,7 @@
    "p_home": 20.8,
    "neutral": false,
    "spread_line": -7.0,
-   "mkt_p": 27.3
+   "mkt_p": 26.7
   },
   {
    "season": 2026,
@@ -99,7 +99,7 @@
    "p_home": 51.0,
    "neutral": false,
    "spread_line": -3.5,
-   "mkt_p": 37.3
+   "mkt_p": 37.2
   },
   {
    "season": 2026,
@@ -127,7 +127,7 @@
    "p_home": 36.7,
    "neutral": false,
    "spread_line": -11.5,
-   "mkt_p": 15.2
+   "mkt_p": 15.9
   },
   {
    "season": 2026,
@@ -141,7 +141,7 @@
    "p_home": 48.8,
    "neutral": false,
    "spread_line": 3.0,
-   "mkt_p": 59.1
+   "mkt_p": 58.2
   },
   {
    "season": 2026,
@@ -183,7 +183,7 @@
    "p_home": 51.4,
    "neutral": false,
    "spread_line": -2.5,
-   "mkt_p": 42.3
+   "mkt_p": 42.1
   },
   {
    "season": 2026,
@@ -197,7 +197,7 @@
    "p_home": 79.7,
    "neutral": false,
    "spread_line": 7.0,
-   "mkt_p": 74.1
+   "mkt_p": 74.6
   },
   {
    "season": 2026,
@@ -210,8 +210,8 @@
    "elo_home": 1429.7,
    "p_home": 68.8,
    "neutral": false,
-   "spread_line": 3.0,
-   "mkt_p": 59.0
+   "spread_line": 2.5,
+   "mkt_p": 57.1
   },
   {
    "season": 2026,
@@ -224,8 +224,8 @@
    "elo_home": 1534.4,
    "p_home": 49.7,
    "neutral": false,
-   "spread_line": -3.5,
-   "mkt_p": 35.3
+   "spread_line": -4.5,
+   "mkt_p": 33.0
   },
   {
    "season": 2026,
@@ -238,8 +238,8 @@
    "elo_home": 1426.4,
    "p_home": 43.8,
    "neutral": false,
-   "spread_line": -2.5,
-   "mkt_p": null
+   "spread_line": -3.0,
+   "mkt_p": 44.0
   },
   {
    "season": 2026,
@@ -253,7 +253,7 @@
    "p_home": 42.5,
    "neutral": false,
    "spread_line": -1.5,
-   "mkt_p": null
+   "mkt_p": 48.3
   },
   {
    "season": 2026,
@@ -266,8 +266,8 @@
    "elo_home": 1603.6,
    "p_home": 57.0,
    "neutral": false,
-   "spread_line": 3.0,
-   "mkt_p": null
+   "spread_line": 4.5,
+   "mkt_p": 64.5
   },
   {
    "season": 2026,
@@ -280,8 +280,8 @@
    "elo_home": 1690.8,
    "p_home": 83.2,
    "neutral": false,
-   "spread_line": null,
-   "mkt_p": null
+   "spread_line": 6.5,
+   "mkt_p": 73.1
   },
   {
    "season": 2026,
@@ -294,8 +294,8 @@
    "elo_home": 1422.2,
    "p_home": 39.7,
    "neutral": false,
-   "spread_line": -5.5,
-   "mkt_p": null
+   "spread_line": -6.0,
+   "mkt_p": 31.6
   },
   {
    "season": 2026,
@@ -309,7 +309,7 @@
    "p_home": 78.0,
    "neutral": false,
    "spread_line": 10.5,
-   "mkt_p": null
+   "mkt_p": 82.4
   },
   {
    "season": 2026,
@@ -322,8 +322,8 @@
    "elo_home": 1569.7,
    "p_home": 52.0,
    "neutral": false,
-   "spread_line": -3.0,
-   "mkt_p": null
+   "spread_line": -2.5,
+   "mkt_p": 44.3
   },
   {
    "season": 2026,
@@ -336,8 +336,8 @@
    "elo_home": 1450.1,
    "p_home": 42.3,
    "neutral": false,
-   "spread_line": -2.5,
-   "mkt_p": null
+   "spread_line": -3.0,
+   "mkt_p": 42.4
   },
   {
    "season": 2026,
@@ -350,8 +350,8 @@
    "elo_home": 1543.8,
    "p_home": 66.3,
    "neutral": false,
-   "spread_line": 2.5,
-   "mkt_p": null
+   "spread_line": 3.0,
+   "mkt_p": 57.4
   },
   {
    "season": 2026,
@@ -364,8 +364,8 @@
    "elo_home": 1533.0,
    "p_home": 50.3,
    "neutral": false,
-   "spread_line": 2.5,
-   "mkt_p": null
+   "spread_line": 3.0,
+   "mkt_p": 57.6
   },
   {
    "season": 2026,
@@ -378,8 +378,8 @@
    "elo_home": 1534.4,
    "p_home": 74.3,
    "neutral": false,
-   "spread_line": null,
-   "mkt_p": null
+   "spread_line": 3.0,
+   "mkt_p": 61.8
   },
   {
    "season": 2026,
@@ -393,7 +393,7 @@
    "p_home": 58.5,
    "neutral": false,
    "spread_line": 5.5,
-   "mkt_p": null
+   "mkt_p": 69.2
   },
   {
    "season": 2026,
@@ -407,7 +407,7 @@
    "p_home": 80.3,
    "neutral": false,
    "spread_line": 10.5,
-   "mkt_p": null
+   "mkt_p": 82.8
   },
   {
    "season": 2026,
@@ -421,7 +421,7 @@
    "p_home": 49.1,
    "neutral": true,
    "spread_line": -4.5,
-   "mkt_p": null
+   "mkt_p": 34.1
   },
   {
    "season": 2026,
@@ -435,7 +435,7 @@
    "p_home": 56.5,
    "neutral": false,
    "spread_line": 2.5,
-   "mkt_p": null
+   "mkt_p": 55.9
   },
   {
    "season": 2026,
@@ -449,7 +449,7 @@
    "p_home": 59.9,
    "neutral": false,
    "spread_line": 3.5,
-   "mkt_p": null
+   "mkt_p": 62.6
   },
   {
    "season": 2026,
@@ -1006,50 +1006,63 @@
   {
    "matchup": "ARI @ SF",
    "bet": "ARI ML",
-   "price": 360,
+   "price": 370,
    "book": "fanduel",
-   "fair": "+342",
-   "edge_pct": 4.2,
-   "stake_frac": 0.0029,
+   "fair": "+344",
+   "edge_pct": 5.9,
+   "stake_frac": 0.004,
    "books_n": 11,
    "bettable_n": 1,
-   "any_price": 370,
-   "any_book": "draftkings"
+   "any_price": null,
+   "any_book": null
+  },
+  {
+   "matchup": "TEN @ BAL",
+   "bet": "TEN ML",
+   "price": 500,
+   "book": "fanduel",
+   "fair": "+481",
+   "edge_pct": 3.3,
+   "stake_frac": 0.0017,
+   "books_n": 4,
+   "bettable_n": 1,
+   "any_price": null,
+   "any_book": null
   },
   {
    "matchup": "LAC @ BUF",
    "bet": "LAC ML",
    "price": 300,
    "book": "fanduel",
-   "fair": "+286",
-   "edge_pct": 3.7,
-   "stake_frac": 0.003,
+   "fair": "+293",
+   "edge_pct": 1.8,
+   "stake_frac": 0.0015,
    "books_n": 11,
    "bettable_n": 1,
    "any_price": null,
    "any_book": null
   },
   {
-   "matchup": "NYJ @ DET",
-   "bet": "NYJ ML",
-   "price": 270,
+   "matchup": "KC @ MIA",
+   "bet": "MIA ML",
+   "price": 540,
    "book": "fanduel",
-   "fair": "+263",
-   "edge_pct": 2.1,
-   "stake_frac": 0.0019,
+   "fair": "+529",
+   "edge_pct": 1.7,
+   "stake_frac": 0.0008,
    "books_n": 11,
    "bettable_n": 1,
-   "any_price": null,
-   "any_book": null
+   "any_price": 575,
+   "any_book": "bovada"
   }
  ],
  "edge_note": "",
  "odds_status": {
-  "checked": "2026-09-22T18:32:29+00:00",
+  "checked": "2026-09-23T18:52:43+00:00",
   "ok": true,
   "error": null,
-  "rows": 171,
-  "games": 16,
+  "rows": 240,
+  "games": 32,
   "kept_previous_rows": null,
   "note": ""
  },
