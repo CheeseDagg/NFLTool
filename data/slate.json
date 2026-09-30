@@ -1,5 +1,5 @@
 {
- "generated": "2026-09-29T19:48:17+00:00",
+ "generated": "2026-09-30T19:51:55+00:00",
  "slate_date": "2026-10-01",
  "slate_end": "2026-10-29",
  "games": [
@@ -15,7 +15,7 @@
    "p_home": 44.2,
    "neutral": false,
    "spread_line": -2.5,
-   "mkt_p": 42.9
+   "mkt_p": 42.6
   },
   {
    "season": 2026,
@@ -29,7 +29,7 @@
    "p_home": 39.5,
    "neutral": false,
    "spread_line": -3.5,
-   "mkt_p": 36.8
+   "mkt_p": 36.5
   },
   {
    "season": 2026,
@@ -43,7 +43,7 @@
    "p_home": 56.5,
    "neutral": false,
    "spread_line": 3.0,
-   "mkt_p": 57.3
+   "mkt_p": 57.1
   },
   {
    "season": 2026,
@@ -57,7 +57,7 @@
    "p_home": 82.5,
    "neutral": false,
    "spread_line": 7.0,
-   "mkt_p": 74.1
+   "mkt_p": 74.5
   },
   {
    "season": 2026,
@@ -70,8 +70,8 @@
    "elo_home": 1608.0,
    "p_home": 81.3,
    "neutral": false,
-   "spread_line": 11.5,
-   "mkt_p": 82.8
+   "spread_line": 10.5,
+   "mkt_p": 83.1
   },
   {
    "season": 2026,
@@ -85,7 +85,7 @@
    "p_home": 47.5,
    "neutral": false,
    "spread_line": -3.5,
-   "mkt_p": 36.6
+   "mkt_p": 37.4
   },
   {
    "season": 2026,
@@ -113,7 +113,7 @@
    "p_home": 41.1,
    "neutral": false,
    "spread_line": -4.5,
-   "mkt_p": 34.4
+   "mkt_p": 34.8
   },
   {
    "season": 2026,
@@ -127,7 +127,7 @@
    "p_home": 66.3,
    "neutral": false,
    "spread_line": 2.5,
-   "mkt_p": 56.6
+   "mkt_p": 58.3
   },
   {
    "season": 2026,
@@ -141,7 +141,7 @@
    "p_home": 43.7,
    "neutral": false,
    "spread_line": 2.5,
-   "mkt_p": 56.2
+   "mkt_p": 56.6
   },
   {
    "season": 2026,
@@ -155,7 +155,7 @@
    "p_home": 78.7,
    "neutral": false,
    "spread_line": 3.5,
-   "mkt_p": 61.4
+   "mkt_p": 61.6
   },
   {
    "season": 2026,
@@ -168,8 +168,8 @@
    "elo_home": 1646.9,
    "p_home": 64.1,
    "neutral": false,
-   "spread_line": 7.0,
-   "mkt_p": 72.0
+   "spread_line": 6.5,
+   "mkt_p": 72.7
   },
   {
    "season": 2026,
@@ -183,7 +183,7 @@
    "p_home": 82.4,
    "neutral": false,
    "spread_line": 11.5,
-   "mkt_p": 83.9
+   "mkt_p": 83.8
   },
   {
    "season": 2026,
@@ -197,7 +197,7 @@
    "p_home": 49.9,
    "neutral": true,
    "spread_line": -3.5,
-   "mkt_p": 37.3
+   "mkt_p": 36.6
   },
   {
    "season": 2026,
@@ -210,8 +210,8 @@
    "elo_home": 1440.1,
    "p_home": 59.4,
    "neutral": false,
-   "spread_line": -1.5,
-   "mkt_p": 48.7
+   "spread_line": -2.5,
+   "mkt_p": 45.7
   },
   {
    "season": 2026,
@@ -224,8 +224,8 @@
    "elo_home": 1438.4,
    "p_home": 50.9,
    "neutral": false,
-   "spread_line": 3.0,
-   "mkt_p": 57.6
+   "spread_line": 2.5,
+   "mkt_p": 57.1
   },
   {
    "season": 2026,
@@ -266,8 +266,8 @@
    "elo_home": 1671.4,
    "p_home": 62.2,
    "neutral": false,
-   "spread_line": 3.5,
-   "mkt_p": 62.2
+   "spread_line": 3.0,
+   "mkt_p": 61.9
   },
   {
    "season": 2026,
@@ -281,7 +281,7 @@
    "p_home": 35.9,
    "neutral": false,
    "spread_line": -5.5,
-   "mkt_p": 31.7
+   "mkt_p": 31.9
   },
   {
    "season": 2026,
@@ -294,8 +294,8 @@
    "elo_home": 1438.0,
    "p_home": 34.0,
    "neutral": false,
-   "spread_line": -1.5,
-   "mkt_p": 46.0
+   "spread_line": -2.5,
+   "mkt_p": 45.4
   },
   {
    "season": 2026,
@@ -309,7 +309,7 @@
    "p_home": 55.2,
    "neutral": false,
    "spread_line": 2.5,
-   "mkt_p": 56.1
+   "mkt_p": 56.0
   },
   {
    "season": 2026,
@@ -322,8 +322,8 @@
    "elo_home": 1520.9,
    "p_home": 67.1,
    "neutral": false,
-   "spread_line": 1.5,
-   "mkt_p": 55.5
+   "spread_line": 2.5,
+   "mkt_p": 55.1
   },
   {
    "season": 2026,
@@ -336,8 +336,8 @@
    "elo_home": 1455.2,
    "p_home": 42.0,
    "neutral": false,
-   "spread_line": -6.5,
-   "mkt_p": 27.7
+   "spread_line": -6.0,
+   "mkt_p": 29.2
   },
   {
    "season": 2026,
@@ -350,7 +350,7 @@
    "elo_home": 1438.4,
    "p_home": 31.2,
    "neutral": false,
-   "spread_line": -1.5,
+   "spread_line": -2.5,
    "mkt_p": 45.0
   },
   {
@@ -365,7 +365,7 @@
    "p_home": 71.2,
    "neutral": false,
    "spread_line": 3.5,
-   "mkt_p": 62.7
+   "mkt_p": 62.5
   },
   {
    "season": 2026,
@@ -379,7 +379,7 @@
    "p_home": 36.7,
    "neutral": false,
    "spread_line": -8.5,
-   "mkt_p": 19.6
+   "mkt_p": 20.4
   },
   {
    "season": 2026,
@@ -393,7 +393,7 @@
    "p_home": 42.0,
    "neutral": false,
    "spread_line": 2.5,
-   "mkt_p": 55.5
+   "mkt_p": 55.3
   },
   {
    "season": 2026,
@@ -435,7 +435,7 @@
    "p_home": 44.3,
    "neutral": false,
    "spread_line": 2.5,
-   "mkt_p": 54.8
+   "mkt_p": 55.1
   },
   {
    "season": 2026,
@@ -976,27 +976,53 @@
  ],
  "edges": [
   {
-   "matchup": "NE @ BUF",
-   "bet": "NE ML",
-   "price": 265,
+   "matchup": "BAL @ ATL",
+   "bet": "ATL ML",
+   "price": 270,
    "book": "fanduel",
-   "fair": "+258",
-   "edge_pct": 2.1,
-   "stake_frac": 0.0019,
-   "books_n": 11,
+   "fair": "+243",
+   "edge_pct": 8.0,
+   "stake_frac": 0.0074,
+   "books_n": 3,
    "bettable_n": 1,
-   "any_price": 270,
-   "any_book": "betmgm"
+   "any_price": null,
+   "any_book": null
+  },
+  {
+   "matchup": "CIN @ MIA",
+   "bet": "MIA ML",
+   "price": 410,
+   "book": "fanduel",
+   "fair": "+390",
+   "edge_pct": 4.2,
+   "stake_frac": 0.0025,
+   "books_n": 3,
+   "bettable_n": 1,
+   "any_price": null,
+   "any_book": null
   },
   {
    "matchup": "TEN @ BAL",
    "bet": "TEN ML",
-   "price": 530,
+   "price": 540,
    "book": "fanduel",
-   "fair": "+520",
-   "edge_pct": 1.6,
-   "stake_frac": 0.0008,
+   "fair": "+516",
+   "edge_pct": 4.0,
+   "stake_frac": 0.0018,
    "books_n": 11,
+   "bettable_n": 1,
+   "any_price": null,
+   "any_book": null
+  },
+  {
+   "matchup": "SF @ SEA",
+   "bet": "SF ML",
+   "price": 168,
+   "book": "fanduel",
+   "fair": "+163",
+   "edge_pct": 2.1,
+   "stake_frac": 0.0031,
+   "books_n": 3,
    "bettable_n": 1,
    "any_price": null,
    "any_book": null
@@ -1004,10 +1030,10 @@
  ],
  "edge_note": "",
  "odds_status": {
-  "checked": "2026-09-29T19:48:16+00:00",
+  "checked": "2026-09-30T19:51:53+00:00",
   "ok": true,
   "error": null,
-  "rows": 204,
+  "rows": 230,
   "games": 31,
   "kept_previous_rows": null,
   "note": ""
