@@ -1,7 +1,7 @@
 {
- "generated": "2026-10-09T20:00:31+00:00",
+ "generated": "2026-10-10T19:08:00+00:00",
  "slate_date": "2026-10-11",
- "slate_end": "2026-11-08",
+ "slate_end": "2026-11-09",
  "games": [
   {
    "season": 2026,
@@ -15,7 +15,7 @@
    "p_home": 67.4,
    "neutral": false,
    "spread_line": 7.5,
-   "mkt_p": 75.8
+   "mkt_p": 75.9
   },
   {
    "season": 2026,
@@ -28,8 +28,8 @@
    "elo_home": 1486.8,
    "p_home": 45.4,
    "neutral": false,
-   "spread_line": 3.5,
-   "mkt_p": 61.4
+   "spread_line": 3.0,
+   "mkt_p": 61.1
   },
   {
    "season": 2026,
@@ -57,7 +57,7 @@
    "p_home": 35.5,
    "neutral": false,
    "spread_line": -3.5,
-   "mkt_p": 38.1
+   "mkt_p": 37.4
   },
   {
    "season": 2026,
@@ -70,8 +70,8 @@
    "elo_home": 1415.5,
    "p_home": 48.7,
    "neutral": false,
-   "spread_line": 4.5,
-   "mkt_p": 63.9
+   "spread_line": 3.5,
+   "mkt_p": 62.6
   },
   {
    "season": 2026,
@@ -99,7 +99,7 @@
    "p_home": 36.3,
    "neutral": false,
    "spread_line": -5.5,
-   "mkt_p": 31.5
+   "mkt_p": 31.6
   },
   {
    "season": 2026,
@@ -113,7 +113,7 @@
    "p_home": 39.7,
    "neutral": false,
    "spread_line": 2.5,
-   "mkt_p": 55.6
+   "mkt_p": 56.2
   },
   {
    "season": 2026,
@@ -127,7 +127,7 @@
    "p_home": 26.6,
    "neutral": false,
    "spread_line": -2.5,
-   "mkt_p": 43.8
+   "mkt_p": 44.1
   },
   {
    "season": 2026,
@@ -141,7 +141,7 @@
    "p_home": 74.4,
    "neutral": false,
    "spread_line": 3.5,
-   "mkt_p": 63.2
+   "mkt_p": 62.7
   },
   {
    "season": 2026,
@@ -154,8 +154,8 @@
    "elo_home": 1383.1,
    "p_home": 37.8,
    "neutral": false,
-   "spread_line": -6.5,
-   "mkt_p": 26.7
+   "spread_line": -7.0,
+   "mkt_p": 26.2
   },
   {
    "season": 2026,
@@ -169,7 +169,7 @@
    "p_home": 42.2,
    "neutral": false,
    "spread_line": -1.5,
-   "mkt_p": 47.5
+   "mkt_p": 46.8
   },
   {
    "season": 2026,
@@ -183,7 +183,7 @@
    "p_home": 61.0,
    "neutral": false,
    "spread_line": 3.0,
-   "mkt_p": 57.2
+   "mkt_p": 57.4
   },
   {
    "season": 2026,
@@ -197,7 +197,7 @@
    "p_home": 49.1,
    "neutral": false,
    "spread_line": 3.0,
-   "mkt_p": 61.4
+   "mkt_p": 61.5
   },
   {
    "season": 2026,
@@ -253,7 +253,7 @@
    "p_home": 29.7,
    "neutral": false,
    "spread_line": -4.5,
-   "mkt_p": 33.2
+   "mkt_p": 33.0
   },
   {
    "season": 2026,
@@ -267,7 +267,7 @@
    "p_home": 73.5,
    "neutral": false,
    "spread_line": 7.5,
-   "mkt_p": 76.9
+   "mkt_p": 76.8
   },
   {
    "season": 2026,
@@ -302,14 +302,14 @@
    "week": 6,
    "date": "Sun Oct 18",
    "date_iso": "2026-10-18",
-   "away": "BAL",
-   "home": "CLE",
-   "elo_away": 1549.4,
-   "elo_home": 1455.8,
+   "away": "CHI",
+   "home": "ATL",
+   "elo_away": 1574.4,
+   "elo_home": 1486.8,
    "p_home": 42.4,
    "neutral": false,
-   "spread_line": -3.0,
-   "mkt_p": 38.9
+   "spread_line": -1.5,
+   "mkt_p": 46.2
   },
   {
    "season": 2026,
@@ -344,14 +344,14 @@
    "week": 6,
    "date": "Sun Oct 18",
    "date_iso": "2026-10-18",
-   "away": "CHI",
-   "home": "ATL",
-   "elo_away": 1574.4,
-   "elo_home": 1486.8,
+   "away": "BAL",
+   "home": "CLE",
+   "elo_away": 1549.4,
+   "elo_home": 1455.8,
    "p_home": 42.4,
    "neutral": false,
-   "spread_line": -1.5,
-   "mkt_p": 46.2
+   "spread_line": -3.0,
+   "mkt_p": 38.5
   },
   {
    "season": 2026,
@@ -414,11 +414,11 @@
    "week": 7,
    "date": "Sun Oct 25",
    "date_iso": "2026-10-25",
-   "away": "CLE",
-   "home": "TEN",
-   "elo_away": 1455.8,
-   "elo_home": 1304.9,
-   "p_home": 33.8,
+   "away": "DEN",
+   "home": "ARI",
+   "elo_away": 1581.6,
+   "elo_home": 1389.7,
+   "p_home": 27.4,
    "neutral": false,
    "spread_line": null,
    "mkt_p": null
@@ -470,11 +470,11 @@
    "week": 7,
    "date": "Sun Oct 25",
    "date_iso": "2026-10-25",
-   "away": "DEN",
-   "home": "ARI",
-   "elo_away": 1581.6,
-   "elo_home": 1389.7,
-   "p_home": 27.4,
+   "away": "CLE",
+   "home": "TEN",
+   "elo_away": 1455.8,
+   "elo_home": 1304.9,
+   "p_home": 33.8,
    "neutral": false,
    "spread_line": null,
    "mkt_p": null
@@ -489,20 +489,6 @@
    "elo_away": 1383.1,
    "elo_home": 1360.3,
    "p_home": 47.9,
-   "neutral": false,
-   "spread_line": null,
-   "mkt_p": null
-  },
-  {
-   "season": 2026,
-   "week": 7,
-   "date": "Sun Oct 25",
-   "date_iso": "2026-10-25",
-   "away": "IND",
-   "home": "MIN",
-   "elo_away": 1474.0,
-   "elo_home": 1614.0,
-   "p_home": 76.2,
    "neutral": false,
    "spread_line": null,
    "mkt_p": null
@@ -580,6 +566,20 @@
   {
    "season": 2026,
    "week": 7,
+   "date": "Sun Oct 25",
+   "date_iso": "2026-10-25",
+   "away": "IND",
+   "home": "MIN",
+   "elo_away": 1474.0,
+   "elo_home": 1614.0,
+   "p_home": 76.2,
+   "neutral": false,
+   "spread_line": null,
+   "mkt_p": null
+  },
+  {
+   "season": 2026,
+   "week": 7,
    "date": "Mon Oct 26",
    "date_iso": "2026-10-26",
    "away": "DAL",
@@ -601,6 +601,20 @@
    "elo_away": 1461.1,
    "elo_home": 1479.5,
    "p_home": 57.6,
+   "neutral": false,
+   "spread_line": null,
+   "mkt_p": null
+  },
+  {
+   "season": 2026,
+   "week": 8,
+   "date": "Sun Nov 1",
+   "date_iso": "2026-11-01",
+   "away": "KC",
+   "home": "DEN",
+   "elo_away": 1566.1,
+   "elo_home": 1581.6,
+   "p_home": 56.4,
    "neutral": false,
    "spread_line": null,
    "mkt_p": null
@@ -680,11 +694,11 @@
    "week": 8,
    "date": "Sun Nov 1",
    "date_iso": "2026-11-01",
-   "away": "KC",
-   "home": "DEN",
-   "elo_away": 1566.1,
-   "elo_home": 1581.6,
-   "p_home": 56.4,
+   "away": "LV",
+   "home": "NYJ",
+   "elo_away": 1439.4,
+   "elo_home": 1360.3,
+   "p_home": 43.6,
    "neutral": false,
    "spread_line": null,
    "mkt_p": null
@@ -762,20 +776,6 @@
   {
    "season": 2026,
    "week": 8,
-   "date": "Sun Nov 1",
-   "date_iso": "2026-11-01",
-   "away": "LV",
-   "home": "NYJ",
-   "elo_away": 1439.4,
-   "elo_home": 1360.3,
-   "p_home": 43.6,
-   "neutral": false,
-   "spread_line": null,
-   "mkt_p": null
-  },
-  {
-   "season": 2026,
-   "week": 8,
    "date": "Mon Nov 2",
    "date_iso": "2026-11-02",
    "away": "CHI",
@@ -797,6 +797,20 @@
    "elo_away": 1614.7,
    "elo_home": 1549.4,
    "p_home": 45.6,
+   "neutral": false,
+   "spread_line": null,
+   "mkt_p": null
+  },
+  {
+   "season": 2026,
+   "week": 9,
+   "date": "Sun Nov 8",
+   "date_iso": "2026-11-08",
+   "away": "ARI",
+   "home": "SEA",
+   "elo_away": 1389.7,
+   "elo_home": 1678.0,
+   "p_home": 83.9,
    "neutral": false,
    "spread_line": null,
    "mkt_p": null
@@ -876,11 +890,11 @@
    "week": 9,
    "date": "Sun Nov 8",
    "date_iso": "2026-11-08",
-   "away": "DAL",
-   "home": "IND",
-   "elo_away": 1442.1,
-   "elo_home": 1474.0,
-   "p_home": 59.4,
+   "away": "TB",
+   "home": "CHI",
+   "elo_away": 1440.8,
+   "elo_home": 1574.4,
+   "p_home": 72.0,
    "neutral": false,
    "spread_line": null,
    "mkt_p": null
@@ -918,6 +932,20 @@
    "week": 9,
    "date": "Sun Nov 8",
    "date_iso": "2026-11-08",
+   "away": "DAL",
+   "home": "IND",
+   "elo_away": 1442.1,
+   "elo_home": 1474.0,
+   "p_home": 59.4,
+   "neutral": false,
+   "spread_line": null,
+   "mkt_p": null
+  },
+  {
+   "season": 2026,
+   "week": 9,
+   "date": "Sun Nov 8",
+   "date_iso": "2026-11-08",
    "away": "DEN",
    "home": "CAR",
    "elo_away": 1581.6,
@@ -946,20 +974,6 @@
    "week": 9,
    "date": "Sun Nov 8",
    "date_iso": "2026-11-08",
-   "away": "ARI",
-   "home": "SEA",
-   "elo_away": 1389.7,
-   "elo_home": 1678.0,
-   "p_home": 83.9,
-   "neutral": false,
-   "spread_line": null,
-   "mkt_p": null
-  },
-  {
-   "season": 2026,
-   "week": 9,
-   "date": "Sun Nov 8",
-   "date_iso": "2026-11-08",
    "away": "CLE",
    "home": "NO",
    "elo_away": 1455.8,
@@ -972,13 +986,13 @@
   {
    "season": 2026,
    "week": 9,
-   "date": "Sun Nov 8",
-   "date_iso": "2026-11-08",
-   "away": "TB",
-   "home": "CHI",
-   "elo_away": 1440.8,
-   "elo_home": 1574.4,
-   "p_home": 72.0,
+   "date": "Mon Nov 9",
+   "date_iso": "2026-11-09",
+   "away": "BUF",
+   "home": "MIN",
+   "elo_away": 1627.7,
+   "elo_home": 1614.0,
+   "p_home": 53.0,
    "neutral": false,
    "spread_line": null,
    "mkt_p": null
@@ -1120,35 +1134,9 @@
    "bet": "LAC ML",
    "price": 350,
    "book": "fanduel",
-   "fair": "+333",
-   "edge_pct": 3.8,
-   "stake_frac": 0.0027,
-   "books_n": 5,
-   "bettable_n": 1,
-   "any_price": null,
-   "any_book": null
-  },
-  {
-   "matchup": "BUF @ LV",
-   "bet": "LV ML",
-   "price": 205,
-   "book": "fanduel",
-   "fair": "+201",
-   "edge_pct": 1.3,
-   "stake_frac": 0.0016,
-   "books_n": 4,
-   "bettable_n": 1,
-   "any_price": null,
-   "any_book": null
-  },
-  {
-   "matchup": "BAL @ CLE",
-   "bet": "CLE ML",
-   "price": 160,
-   "book": "fanduel",
-   "fair": "+157",
-   "edge_pct": 1.1,
-   "stake_frac": 0.0016,
+   "fair": "+330",
+   "edge_pct": 4.6,
+   "stake_frac": 0.0033,
    "books_n": 4,
    "bettable_n": 1,
    "any_price": null,
@@ -1157,10 +1145,10 @@
  ],
  "edge_note": "",
  "odds_status": {
-  "checked": "2026-10-09T20:00:29+00:00",
+  "checked": "2026-10-10T19:07:59+00:00",
   "ok": true,
   "error": null,
-  "rows": 212,
+  "rows": 211,
   "games": 26,
   "kept_previous_rows": null,
   "note": ""
