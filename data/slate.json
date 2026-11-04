@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-03T20:47:27+00:00",
+ "generated": "2026-11-04T21:03:59+00:00",
  "slate_date": "2026-11-05",
  "slate_end": "2026-12-03",
  "games": [
@@ -15,7 +15,7 @@
    "p_home": 37.8,
    "neutral": false,
    "spread_line": -10.0,
-   "mkt_p": 19.3
+   "mkt_p": null
   },
   {
    "season": 2026,
@@ -29,7 +29,7 @@
    "p_home": 35.6,
    "neutral": true,
    "spread_line": -3.0,
-   "mkt_p": 40.0
+   "mkt_p": null
   },
   {
    "season": 2026,
@@ -43,7 +43,7 @@
    "p_home": 28.6,
    "neutral": false,
    "spread_line": -2.5,
-   "mkt_p": 42.1
+   "mkt_p": null
   },
   {
    "season": 2026,
@@ -56,8 +56,8 @@
    "elo_home": 1403.3,
    "p_home": 48.6,
    "neutral": false,
-   "spread_line": -6.0,
-   "mkt_p": 31.1
+   "spread_line": -5.5,
+   "mkt_p": null
   },
   {
    "season": 2026,
@@ -70,8 +70,8 @@
    "elo_home": 1547.6,
    "p_home": 79.4,
    "neutral": false,
-   "spread_line": 9.5,
-   "mkt_p": 80.0
+   "spread_line": 10.0,
+   "mkt_p": null
   },
   {
    "season": 2026,
@@ -85,7 +85,7 @@
    "p_home": 27.4,
    "neutral": false,
    "spread_line": -7.0,
-   "mkt_p": 26.6
+   "mkt_p": null
   },
   {
    "season": 2026,
@@ -98,8 +98,8 @@
    "elo_home": 1410.4,
    "p_home": 53.9,
    "neutral": false,
-   "spread_line": 1.5,
-   "mkt_p": 52.4
+   "spread_line": 3.0,
+   "mkt_p": null
   },
   {
    "season": 2026,
@@ -113,7 +113,7 @@
    "p_home": 45.2,
    "neutral": false,
    "spread_line": -3.5,
-   "mkt_p": 38.2
+   "mkt_p": null
   },
   {
    "season": 2026,
@@ -127,7 +127,7 @@
    "p_home": 33.5,
    "neutral": false,
    "spread_line": -5.5,
-   "mkt_p": 31.6
+   "mkt_p": null
   },
   {
    "season": 2026,
@@ -141,7 +141,7 @@
    "p_home": 33.7,
    "neutral": false,
    "spread_line": -4.5,
-   "mkt_p": 34.3
+   "mkt_p": null
   },
   {
    "season": 2026,
@@ -155,7 +155,7 @@
    "p_home": 81.9,
    "neutral": false,
    "spread_line": 10.0,
-   "mkt_p": 80.2
+   "mkt_p": null
   },
   {
    "season": 2026,
@@ -169,7 +169,7 @@
    "p_home": 61.4,
    "neutral": false,
    "spread_line": 3.0,
-   "mkt_p": 60.3
+   "mkt_p": null
   },
   {
    "season": 2026,
@@ -182,8 +182,8 @@
    "elo_home": 1624.6,
    "p_home": 79.1,
    "neutral": false,
-   "spread_line": 10.5,
-   "mkt_p": 82.7
+   "spread_line": 8.5,
+   "mkt_p": null
   },
   {
    "season": 2026,
@@ -197,7 +197,7 @@
    "p_home": 70.0,
    "neutral": false,
    "spread_line": 6.0,
-   "mkt_p": 70.1
+   "mkt_p": null
   },
   {
    "season": 2026,
@@ -211,7 +211,7 @@
    "p_home": 47.4,
    "neutral": false,
    "spread_line": -3.5,
-   "mkt_p": 37.9
+   "mkt_p": null
   },
   {
    "season": 2026,
@@ -225,7 +225,7 @@
    "p_home": 57.2,
    "neutral": false,
    "spread_line": 1.5,
-   "mkt_p": 52.3
+   "mkt_p": null
   },
   {
    "season": 2026,
@@ -238,8 +238,8 @@
    "elo_home": 1574.1,
    "p_home": 46.3,
    "neutral": true,
-   "spread_line": null,
-   "mkt_p": 45.7
+   "spread_line": -1.5,
+   "mkt_p": null
   },
   {
    "season": 2026,
@@ -252,7 +252,7 @@
    "elo_home": 1458.0,
    "p_home": 41.7,
    "neutral": false,
-   "spread_line": -3.5,
+   "spread_line": -3.0,
    "mkt_p": null
   },
   {
@@ -266,7 +266,7 @@
    "elo_home": 1442.3,
    "p_home": 44.3,
    "neutral": false,
-   "spread_line": -3.5,
+   "spread_line": -4.5,
    "mkt_p": null
   },
   {
@@ -294,7 +294,7 @@
    "elo_home": 1403.3,
    "p_home": 58.6,
    "neutral": false,
-   "spread_line": 1.5,
+   "spread_line": 2.5,
    "mkt_p": null
   },
   {
@@ -350,7 +350,7 @@
    "elo_home": 1394.4,
    "p_home": 30.3,
    "neutral": false,
-   "spread_line": -7.5,
+   "spread_line": -8.5,
    "mkt_p": null
   },
   {
@@ -364,7 +364,7 @@
    "elo_home": 1416.3,
    "p_home": 26.5,
    "neutral": false,
-   "spread_line": -5.5,
+   "spread_line": null,
    "mkt_p": null
   },
   {
@@ -378,7 +378,7 @@
    "elo_home": 1443.8,
    "p_home": 30.3,
    "neutral": false,
-   "spread_line": -4.5,
+   "spread_line": -3.5,
    "mkt_p": null
   },
   {
@@ -960,56 +960,16 @@
    "elo": 1305.1
   }
  ],
- "edges": [
-  {
-   "matchup": "NYJ @ KC",
-   "bet": "NYJ ML",
-   "price": 430,
-   "book": "fanduel",
-   "fair": "+400",
-   "edge_pct": 6.0,
-   "stake_frac": 0.0035,
-   "books_n": 10,
-   "bettable_n": 1,
-   "any_price": null,
-   "any_book": null
-  },
-  {
-   "matchup": "LV @ SF",
-   "bet": "LV ML",
-   "price": 430,
-   "book": "fanduel",
-   "fair": "+406",
-   "edge_pct": 4.7,
-   "stake_frac": 0.0028,
-   "books_n": 10,
-   "bettable_n": 1,
-   "any_price": null,
-   "any_book": null
-  },
-  {
-   "matchup": "DET @ MIA",
-   "bet": "MIA ML",
-   "price": 280,
-   "book": "fanduel",
-   "fair": "+276",
-   "edge_pct": 1.1,
-   "stake_frac": 0.001,
-   "books_n": 10,
-   "bettable_n": 1,
-   "any_price": 295,
-   "any_book": "draftkings"
-  }
- ],
- "edge_note": "",
+ "edges": [],
+ "edge_note": "odds pull FAILED (HTTPError: HTTP Error 401: Unauthorized) at 2026-11-04T21:03:58+00:00 \u2014 prices below, if any, are stale. This is not an offseason signal.",
  "odds_status": {
-  "checked": "2026-11-03T20:47:26+00:00",
-  "ok": true,
-  "error": null,
-  "rows": 152,
-  "games": 17,
-  "kept_previous_rows": null,
-  "note": ""
+  "checked": "2026-11-04T21:03:58+00:00",
+  "ok": false,
+  "error": "HTTPError: HTTP Error 401: Unauthorized",
+  "rows": null,
+  "games": null,
+  "kept_previous_rows": 0,
+  "note": "odds pull FAILED \u2014 the previous nfl_odds.csv was kept, not overwritten. This is NOT an offseason signal."
  },
  "bettable": [
   "fanduel"
